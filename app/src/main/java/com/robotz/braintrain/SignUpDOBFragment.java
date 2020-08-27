@@ -65,10 +65,14 @@ public class SignUpDOBFragment extends Fragment {
 
     private boolean validName(String text) {
         int dob = 0;
-        if(text !=""){
+        boolean date;
+        if(text != null && text.length() >= 4){
             dob = Integer.parseInt(text);
+            if(dob >= 1920){
+                return true;
+            }
         }
-        return text != "" && text.length() >= 4 && dob >= 1920;
+        return false;
     }
 
     @Override

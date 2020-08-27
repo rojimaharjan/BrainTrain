@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout;
 public class SignUpFNFragment extends Fragment {
     private onFragmentContinued listner;
 
+    private  TextInputLayout usernameTextInput;
     private EditText fathersFirstName;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,7 +30,7 @@ public class SignUpFNFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_sign_up_f_n, container, false);
         MaterialButton continueButton = view.findViewById(R.id.continue_button);
         final MaterialButton cancelButton = view.findViewById(R.id.cancel_button);
-        final TextInputLayout usernameTextInput = view.findViewById(R.id.username_text_input);
+        usernameTextInput = view.findViewById(R.id.firstname_text_input);
         fathersFirstName = view.findViewById(R.id.username_edit_text);
 
         continueButton.setOnClickListener(new View.OnClickListener() {
