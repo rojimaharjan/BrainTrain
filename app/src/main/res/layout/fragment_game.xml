@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context=".GameFragment">
+
+    <LinearLayout
+        android:id="@+id/layout_frag"
+        style="@style/Widget.Shrine.Backdrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="88dp">
+
+        <include layout="@layout/backdrop" />
+    </LinearLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar_layout">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            style="@style/Widget.Shrine.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="12dp"
+            android:paddingLeft="12dp"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@drawable/shr_menu"
+            app:title="@string/game"     />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:id="@+id/mainlayout"
+        >
+        <TextView
+            android:id="@+id/training"
+            android:layout_below="@+id/MedLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Training"
+            style="@style/TextAppearance.Shrine.Body"
+            android:layout_marginBottom="10dp"
+            />
+        <LinearLayout
+            android:id="@+id/trainingImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_below="@+id/training"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                >
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/CognitiveTesting"
+                    android:src="@drawable/icons8_head_with_brain_100"
+                    android:layout_margin="5dp"
+                    android:paddingLeft="1dp"
+                    android:paddingRight="1dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:background="@drawable/imagebg"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cognitive testing"
+                    android:gravity="center_vertical|center_horizontal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+                <ImageButton
+                    android:id="@+id/XCOG"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/imagebg"
+                    android:clickable="false"
+                    android:paddingLeft="1dp"
+                    android:paddingTop="1dp"
+                    android:paddingRight="1dp"
+                    android:paddingBottom="1dp"
+
+                    android:src="@drawable/icons8_head_with_brain_100" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="X-COG"
+                    android:gravity="center_vertical|center_horizontal"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout>

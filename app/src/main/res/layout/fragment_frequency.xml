@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".FrequencyFragment"
+    android:orientation="vertical"
+    >
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            style="@style/Widget.Shrine.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="0dp"
+            android:paddingLeft="0dp"
+            android:paddingEnd="12dp"
+            android:paddingRight="0dp"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+            app:title="@string/frequency" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/radiofrequency"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dailyXtimesaday"
+            android:layoutDirection="rtl"
+            android:buttonTint="@color/colorPrimary"
+            android:enabled="true"
+            android:focusedByDefault="true"
+            android:id="@+id/dailyXtimesaday"
+            style="@style/TextAppearance.Shrine.TextLabel"
+            />
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="1dp"/>
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dailyeveryXhours"
+            android:layoutDirection="rtl"
+            android:buttonTint="@color/colorPrimary"
+            android:id="@+id/dailyeveryXhours"
+            style="@style/TextAppearance.Shrine.TextLabel"/>
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="1dp"/>
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/everyXdays"
+            android:id="@+id/everyXdays"
+            android:layoutDirection="rtl"
+            android:buttonTint="@color/colorPrimary"
+            style="@style/TextAppearance.Shrine.TextLabel"/>
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="1dp"/>
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/specificdaysofweek"
+            android:id="@+id/specificdaysofweek"
+            android:layoutDirection="rtl"
+            android:buttonTint="@color/colorPrimary"
+            android:enabled="true"
+            android:focusedByDefault="true"
+            style="@style/TextAppearance.Shrine.TextLabel"
+            />
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="1dp"/>
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/cycle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Cycle"
+            android:layoutDirection="rtl"
+            android:buttonTint="@color/colorPrimary"
+            android:enabled="true"
+            android:focusedByDefault="true"
+            style="@style/TextAppearance.Shrine.TextLabel"
+            />
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="1dp"/>
+    </RadioGroup>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frequencysetting"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".HomeFragment"
+    android:background="@android:color/transparent"
+    android:id="@+id/Home">
+
+    <LinearLayout
+        android:id="@+id/layout_frag"
+        style="@style/Widget.Shrine.Backdrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="88dp">
+
+        <include layout="@layout/backdrop" />
+    </LinearLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar_layout">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            style="@style/Widget.Shrine.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="12dp"
+            android:paddingLeft="12dp"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@drawable/shr_menu"
+            app:title="@string/home" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/mainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="56dp"
+        android:padding="10dp"
+        android:elevation="8dp"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:id="@+id/welcomeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="30dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/welcome_text"
+                style="@style/TextAppearance.Shrine.Title"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="user"
+                style="@style/TextAppearance.Shrine.Title"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/MedLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/welcomeLayout"
+            android:layout_marginBottom="100dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/imageMedicationIcon"
+                android:src="@drawable/icons8_hand_a_pill_32"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/MedicationName"
+                android:text="Medication"
+                style="@style/TextAppearance.Shrine.Body"
+                android:layout_toRightOf="@+id/imageMedicationIcon"
+                android:layout_toEndOf="@+id/imageMedicationIcon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/MedicationTotal"
+                android:text="0 Medication"
+                style="@style/TextAppearance.Shrine.BodySmall"
+                android:layout_toRightOf="@+id/imageMedicationIcon"
+                android:layout_toEndOf="@+id/imageMedicationIcon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/MedicationName"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/AddMed_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/button_Add"
+                android:textColor="@android:color/black"
+                android:backgroundTint="@android:color/transparent"
+                app:icon="@drawable/icons8_plus_40"
+                app:iconGravity="end"
+                app:iconTintMode="multiply"
+                />
+
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/training"
+            android:layout_below="@+id/MedLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Training"
+            style="@style/TextAppearance.Shrine.Body"
+            android:layout_marginBottom="10dp"
+            />
+        <LinearLayout
+            android:id="@+id/trainingImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_below="@+id/training"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                >
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/CognitiveTesting"
+                    android:src="@drawable/icons8_head_with_brain_100"
+                    android:layout_margin="5dp"
+                    android:paddingLeft="1dp"
+                    android:paddingRight="1dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:background="@drawable/imagebg"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cognitive testing"
+                    android:gravity="center_vertical|center_horizontal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+                <ImageButton
+                    android:id="@+id/XCOG"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/imagebg"
+                    android:clickable="false"
+                    android:paddingLeft="1dp"
+                    android:paddingTop="1dp"
+                    android:paddingRight="1dp"
+                    android:paddingBottom="1dp"
+
+                    android:src="@drawable/icons8_head_with_brain_100" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="X-COG"
+                    android:gravity="center_vertical|center_horizontal"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+</FrameLayout>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="unit">
+        <item>UI</item>
+        <item>ampoule(s)</item>
+        <item>application(s)</item>
+        <item>capsule(s)</item>
+        <item>drop(s)</item>
+        <item>gramme(s)</item>
+        <item>injection(s)</item>
+        <item>milligramme(s)</item>
+        <item>millilitre(s)</item>
+        <item>patch(es)</item>
+        <item>piece(s)</item>
+        <item>pill(s)</item>
+        <item>puff(s)</item>
+        <item>sachet(s)</item>
+        <item>spray(s)</item>
+        <item>suppository(s)</item>
+        <item>tablespoon(s)</item>
+        <item>teaspoon(s)</item>
+        <item>unit(s)</item>
+    </string-array>
+</resources>

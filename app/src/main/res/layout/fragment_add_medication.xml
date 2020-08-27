@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/loginPageBackgroundColor"
+    tools:context=".AddMedicationFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/app_bar"
+                style="@style/Widget.Shrine.Toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:paddingStart="0dp"
+                android:paddingLeft="0dp"
+                android:paddingEnd="12dp"
+                android:paddingRight="0dp"
+                app:contentInsetStart="0dp"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+                app:title="@string/addMedication" />
+        </com.google.android.material.appbar.AppBarLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="46dp"
+            android:layout_margin="10dp"
+            >
+            <TextView
+                android:id="@+id/MedicationNameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Medication Name"
+                style="@style/TextAppearance.Shrine.Body"
+                android:layout_marginBottom="10dp"
+                />
+            <TextView
+                android:id="@+id/pills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="pill(s)"
+                style="@style/TextAppearance.Shrine.TextInputLayout.HintText"
+                android:layout_marginBottom="5dp"
+                />
+
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="5dp"/>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/asneeded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/asneeded"
+                android:buttonTint="@color/colorPrimary"
+                android:layoutDirection="rtl"
+                android:layout_marginBottom="5dp"
+                style="@style/TextAppearance.Shrine.Body"
+                />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ReminderLayout"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/DurationLayout"
+                    android:layout_marginBottom="20dp">
+                    <TextView
+                        android:id="@+id/Duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/duration"
+                        style="@style/TextAppearance.Shrine.Body"
+                        android:layout_marginBottom="5dp"
+                        />
+                    <TextView
+                        android:id="@+id/DurationTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="10 day(s)"
+                        style="@style/TextAppearance.Shrine.TextInputLayout.HintText"
+                        android:layout_marginBottom="5dp"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/FrequencyLayout"
+                    android:layout_marginBottom="10dp"
+                    >
+                    <TextView
+                        android:id="@+id/Frequency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/frequency"
+                        style="@style/TextAppearance.Shrine.Body"
+                        android:layout_marginBottom="5dp"
+                        />
+                    <TextView
+                        android:id="@+id/FrequencyTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="X times"
+                        style="@style/TextAppearance.Shrine.TextInputLayout.HintText"
+                        android:layout_marginBottom="5dp"
+                        />
+                </LinearLayout>
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginBottom="20dp"/>
+
+                <TextView
+                    android:id="@+id/alarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.Shrine.Body"
+                    android:layout_marginBottom="5dp"
+                    android:drawableLeft="@drawable/icons8_alarm_clock_32"
+                    android:text="Add Reminder"
+                    android:drawablePadding="20dp"
+                    android:gravity="center_vertical"
+                    />
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginBottom="10dp"/>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_button"
+                style="@style/Widget.Shrine.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="@string/button_save" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>

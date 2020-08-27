@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/UserInfo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context=".UserInfoFragment">
+
+    <LinearLayout
+        android:id="@+id/layout_frag"
+        style="@style/Widget.Shrine.Backdrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="88dp">
+
+        <include layout="@layout/backdrop" />
+
+
+    </LinearLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            style="@style/Widget.Shrine.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="12dp"
+            android:paddingLeft="12dp"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@drawable/shr_menu"
+            app:title="@string/UserInfo" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/mainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/MedLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/welcomeLayout"
+            android:layout_marginBottom="20dp"
+            >
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/imageMedicationIcon"
+                android:src="@drawable/icons8_account_32"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/userName"
+                android:text="Username"
+                style="@style/TextAppearance.Shrine.Body"
+                android:layout_toRightOf="@+id/imageMedicationIcon"
+                android:layout_toEndOf="@+id/imageMedicationIcon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail"
+                android:text="Active(since date)"
+                style="@style/TextAppearance.Shrine.BodySmall"
+                android:layout_toRightOf="@+id/imageMedicationIcon"
+                android:layout_toEndOf="@+id/imageMedicationIcon"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/userName"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/AddMed_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:textColor="@android:color/black"
+                android:backgroundTint="@android:color/transparent"
+                app:icon="@drawable/icons8_google_drive_32"
+                app:iconTintMode="multiply"
+                />
+
+        </RelativeLayout>
+        <View
+            android:id="@+id/divider6"
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:background="?android:attr/listDivider" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete account"
+            style="@style/TextAppearance.Shrine.Body"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You can delete your user account here. Your personal data in this account will be deleted permanently and irrevocably."
+            style="@style/TextAppearance.Shrine.BodySmall"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:padding="5dp"
+            android:gravity="center_vertical|center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete account?"
+                style="@style/TextAppearance.Shrine.SubTitle"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center_horizontal|center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attention! Deleting your account cannot be reversed."
+                style="@style/TextAppearance.Shrine.Body"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center_horizontal|center_vertical"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

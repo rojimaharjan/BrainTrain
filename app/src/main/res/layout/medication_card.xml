@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/imageMedicationIcon"
+            android:src="@drawable/icons8_pills_32"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/imageMedicationIcon"
+            android:layout_toEndOf="@+id/imageMedicationIcon"
+
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/MedicationName"
+                android:text="MedicationName"
+                style="@style/TextAppearance.Shrine.Body"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/MedicationUnit"
+                android:text="pill(s)"
+                style="@style/TextAppearance.Shrine.BodySmall"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/MedicationName"
+                />
+
+        </RelativeLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/reminderIcon"
+            android:src="@drawable/icons8_alarm_32"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

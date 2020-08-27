@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/medication"
+        android:id="@+id/medication"
+        android:onClick="gotoFragment"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/UserInfo"
+        android:id="@+id/userinfo"
+        android:onClick="gotoFragment"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game"
+        android:id="@+id/game"
+        android:onClick="gotoFragment"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Licence"
+        android:id="@+id/licence"
+        android:onClick="gotoFragment"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/privarypolicy"
+        android:id="@+id/privacypolicy"
+        android:onClick="gotoFragment"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about"
+        android:id="@+id/about"
+        android:onClick="gotoFragment"/>
+
+    <View
+        android:layout_width="56dp"
+        android:layout_height="1dp"
+        android:layout_margin="16dp"
+        android:background="@color/textColorPrimary" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Shrine.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:id="@+id/logout"
+        android:onClick="gotoFragment"/>
+
+
+</merge>
