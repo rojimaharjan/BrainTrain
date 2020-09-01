@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -16,8 +17,14 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
+import com.robotz.braintrain.ViewModel.UserViewModel;
+
+//import com.robotz.braintrain.ViewModel.UserViewModel;
+
 public class MainActivity extends AppCompatActivity implements NavigationHost{
     Toolbar toolbar;
+    private UserViewModel userViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +101,12 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
 
             case (R.id.logout):
                 navigateTo(new LoginFragment(), "", false);
+                final SharedPreferences sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
+                if (sharedPreferences.getBoolean("RememberMe", false) != false) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.clear();
+                    editor.apply();
+                }
                 break;
         }
 

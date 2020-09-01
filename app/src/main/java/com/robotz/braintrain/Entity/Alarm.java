@@ -4,13 +4,14 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import androidx.room.util.TableInfo;
 
 import java.sql.Time;
 
 @Entity(tableName = "alarm_table", foreignKeys = @ForeignKey(entity = Medication.class,
         parentColumns = "id",
         childColumns = "medicationId",
-        onDelete = ForeignKey.CASCADE))
+        onDelete = ForeignKey.NO_ACTION))
 public class Alarm {
     @PrimaryKey(autoGenerate = true)
     private int id;

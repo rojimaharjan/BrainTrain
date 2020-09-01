@@ -13,7 +13,8 @@ import java.util.List;
 
 public class UserRepository {
     private UserDao userDao;
-    private LiveData<List<User>> allUsers;
+    private List<User> allUsers;
+    private User user;
     public UserRepository(Application application){
         BrainTrainDatabase database = BrainTrainDatabase.getInstance(application);
         userDao = database.userDao();
@@ -36,7 +37,7 @@ public class UserRepository {
         new DeleteAllUsersAsyncTask(userDao).execute();
     }
 
-    public LiveData<List<User>> getAllUsers(){
+    public List<User> getAllUsers(){
         return allUsers;
 
     }

@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_username"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="5dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username_edit_text"
@@ -75,6 +75,16 @@
                 android:inputType="text"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rememberme"
+            android:text="@string/rememberme"
+            android:layout_marginBottom="20dp"
+            style="@style/TextAppearance.Shrine.BodySmall"
+            />
+
 
       <!--  <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_text_input"

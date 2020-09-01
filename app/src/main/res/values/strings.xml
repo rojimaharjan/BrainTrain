@@ -58,5 +58,7 @@
     <string name="medicationDetail">Medication Detail</string>
     <string name="error_fathersfirstname">Should be more than 3 character!</string>
     <string name="error_invalidDOB">Invalid date of birth!</string>
+    <string name="rememberme">Remember me</string>
+    <string name="error_username">Username incorrect!!</string>
 
 </resources>

@@ -11,8 +11,7 @@ import java.util.Date;
 @Entity(tableName = "medication_table", foreignKeys = @ForeignKey(entity = User.class,
         parentColumns = "userId",
         childColumns = "userId",
-        onUpdate = ForeignKey.CASCADE,
-        onDelete = ForeignKey.CASCADE))
+        onDelete = ForeignKey.NO_ACTION))
 
 public class Medication {
     @PrimaryKey(autoGenerate = true)

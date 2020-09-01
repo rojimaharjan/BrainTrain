@@ -19,6 +19,7 @@ public class UserInfoRepository {
         userInfoDao = database.userInfoDao();
         allUserInfos = userInfoDao.getAllUserInfos();
 
+
     }
 
     public void insert(UserInfo userInfo){

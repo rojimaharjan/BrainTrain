@@ -10,8 +10,7 @@ import java.util.Date;
 @Entity(tableName = "score_table", foreignKeys = @ForeignKey(entity = User.class,
         parentColumns = "userId",
         childColumns = "userId",
-        onUpdate = ForeignKey.CASCADE,
-        onDelete = ForeignKey.CASCADE))
+        onDelete =ForeignKey.NO_ACTION))
 public class Score {
     @PrimaryKey(autoGenerate = true)
     private int id;

@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity(tableName = "duration_table", foreignKeys = @ForeignKey(entity = Medication.class,
         parentColumns = "id",
         childColumns = "medicationId",
-        onDelete = ForeignKey.CASCADE))
+        onDelete = ForeignKey.NO_ACTION))
 public class Duration {
     @PrimaryKey(autoGenerate = true)
     private int id;

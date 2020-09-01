@@ -5,16 +5,28 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "userInfo_table", foreignKeys = @ForeignKey(entity = User.class,
+/*@Entity(tableName = "userInfo_table", foreignKeys = @ForeignKey(entity = User.class,
         parentColumns = "userId",
         childColumns = "userId",
-        onUpdate = ForeignKey.CASCADE,
-        onDelete = ForeignKey.CASCADE))
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+        ))*/
+
+
+@Entity(tableName = "userInfo_table")
+
 public class UserInfo {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ForeignKey(entity = User.class,
+            parentColumns = "userId",
+            childColumns = "userId",
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+    )
     private int userId;
+
     private String diagnosis;
 
     public int getId() {

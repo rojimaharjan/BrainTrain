@@ -152,7 +152,7 @@ public class FrequencyFragment extends Fragment implements NumberPicker.OnValueC
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if(context instanceof FrequencyFragment.onDataTransferListener){
-            Listener = (FrequencyFragment.onDataTransferListener) context;
+            Listener = (onDataTransferListener) context;
         }else {
             throw  new RuntimeException(context.toString()
                     +"must implement FragmentListner");
