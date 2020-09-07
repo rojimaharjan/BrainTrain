@@ -1,6 +1,8 @@
 
 package com.robotz.braintrain;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -25,6 +28,8 @@ public class HomeFragment extends Fragment {
 
     MaterialButton AddBtn;
     ImageButton CognitiveBtn, XcogBtn;
+    String currentUser ;
+
 
 
     @Override
@@ -38,7 +43,11 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        TextView uname = view.findViewById(R.id.currentUser);
 
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", Context.MODE_PRIVATE);
+        currentUser = sharedPreferences.getString("currentUser", "");
+        uname.setText(currentUser);
         ((NavigationHost) getActivity()).setUpToolbar(view);
 
         AddBtn = view.findViewById(R.id.AddMed_button);

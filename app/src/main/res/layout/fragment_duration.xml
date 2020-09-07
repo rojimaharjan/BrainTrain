@@ -40,7 +40,7 @@
         android:id="@+id/StartDateTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="05.08.2020"
+        android:text="03/09/2020"
         style="@style/TextAppearance.Shrine.TextInputLayout.HintText"
         android:layout_marginBottom="5dp"
         android:paddingLeft="10dp"

@@ -3,8 +3,6 @@ package com.robotz.braintrain.Repository;
 import android.app.Application;
 import android.os.AsyncTask;
 
-import androidx.lifecycle.LiveData;
-
 import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
 import com.robotz.braintrain.Entity.User;
@@ -14,7 +12,7 @@ import java.util.List;
 public class UserRepository {
     private UserDao userDao;
     private List<User> allUsers;
-    private User user;
+    private int id;
     public UserRepository(Application application){
         BrainTrainDatabase database = BrainTrainDatabase.getInstance(application);
         userDao = database.userDao();
@@ -23,8 +21,7 @@ public class UserRepository {
     }
 
     public void insert(User user){
-
-        new InsertUserAsyncTask(userDao).execute(user);
+       new InsertUserAsyncTask(userDao).execute(user);
     }
     public void update(User user){
         new UpdateUserAsyncTask(userDao).execute(user);

@@ -2,41 +2,110 @@ package com.robotz.braintrain;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.robotz.braintrain.Dao.MedicationDao;
+import com.robotz.braintrain.Databse.BrainTrainDatabase;
+import com.robotz.braintrain.Entity.Medication;
+import com.robotz.braintrain.ViewModel.MedicationViewModel;
 import com.robotz.braintrain.ViewModel.UserViewModel;
+
+import java.io.FileNotFoundException;
+import java.util.Collections;
 
 //import com.robotz.braintrain.ViewModel.UserViewModel;
 
-public class MainActivity extends AppCompatActivity implements NavigationHost{
+public class MainActivity extends AppCompatActivity implements NavigationHost, AddMedicationFragment.saveMedicationData{
+    public static final int ADD_MED_REQUEST =1;
     Toolbar toolbar;
     private UserViewModel userViewModel;
+    SharedPreferences sharedPreferences;
+    String currentUser;
+    private MedicationDao medicationDao;
+    public String uploadedFiledId;
+    GoogleDriverServiceHelper googleDriverServiceHelper;
+    private BrainTrainDatabase connDB;
 
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("rememberme", true)) {
+            currentUser = sharedPreferences.getString("currentUser", "");
+            savedInstanceState.putString("userInfo", currentUser);
+//            Toast.makeText(this, "instance saved", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState == null) {
+//        verifyStoragePermissions(this);
+        /*requestSignIn();*/
+        sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
+//        boolean isNull = (sharedPreferences.getBoolean("rememeberme", ));
+        if(sharedPreferences.getBoolean("rememeberme", false)!= false) {
+            currentUser = sharedPreferences.getString("currentUser", "");
+//            savedInstanceState.putString("userInfo", currentUser);
+        }
+        if (currentUser == "" || currentUser == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, new LoginFragment())
                     .commit();
         }
+        else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, new HomeFragment())
+                    .commit();
+
+//            String message = savedInstanceState.getString("UserInfo");
+            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+
+        }
+
+        connDB = Room.databaseBuilder(this, BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
+//        medicationViewModel.getAllMedications();
 
         /*toolbar = findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
@@ -77,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         switch (view.getId()) {
             case (R.id.medication):
                 navigateTo(new MedicationFragment(), "", true);
+                /*Intent intent = new Intent(MainActivity.this, AddMedicationFragment.class);
+                startActivityForResult(intent, ADD_MED_REQUEST);*/
                 break;
 
             case (R.id.userinfo):
@@ -101,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
 
             case (R.id.logout):
                 navigateTo(new LoginFragment(), "", false);
-                final SharedPreferences sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
-                if (sharedPreferences.getBoolean("RememberMe", false) != false) {
+                sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
+                if (sharedPreferences.getBoolean("RememberMe", false)) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.clear();
                     editor.apply();
@@ -130,7 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
 
     }
 
-    /*@Override
+
+
+/*@Override
     public void setDateValue(String date) {
         Fragment forXDaysFragment = new ForXDaysFragment();
         ((ForXDaysFragment) forXDaysFragment).ChangeDayValue(date);
@@ -148,4 +221,159 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
     public void setDayValue(int day) {
         forXDaysFragment.ChangeDayValue(day);
     }*/
+
+  /*  @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ADD_MED_REQUEST && resultCode == RESULT_OK){
+            String medName = data.getStringExtra(AddMedicationFragment.EXTRA_MEDICATIONNAME);
+            String type = data.getStringExtra(AddMedicationFragment.EXTRA_TYPE);
+            String startDate = data.getStringExtra(AddMedicationFragment.EXTRA_TYPE);
+            boolean asneeded = data.getBooleanExtra(AddMedicationFragment.EXTRA_ASNEEDED, false);
+            String duration = data.getStringExtra(AddMedicationFragment.EXTRA_DURATION);
+            String durationTime = data.getStringExtra(AddMedicationFragment.EXTRA_DURATIONTIME);
+            String frequency = data.getStringExtra(AddMedicationFragment.EXTRA_FREQUENCY);
+            String frequencyTime = data.getStringExtra(AddMedicationFragment.EXTRA_FREQUENCYTIME);
+            Medication medication = new Medication(1, medName, type, asneeded);
+            AsyncTask<Medication, Void, Long> id = medicationViewModel.insert(medication);
+            Toast.makeText(this, "id" + id, Toast.LENGTH_SHORT).show();
+            if(!asneeded)
+            {
+                Toast.makeText(this, "id" + asneeded, Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+        else{
+            Toast.makeText(this, "not saved", Toast.LENGTH_SHORT).show();
+        }
+    }*/
+
+    @Override
+    public void getMedicationData(String medName, String type, boolean asNeeded) {
+        medicationDao = Room.databaseBuilder(this, BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().medicationDao();
+        Medication medication = new Medication(1, medName, type, asNeeded);
+        Long id = medicationDao.insert(medication);
+        Toast.makeText(this, "medication saved"  , Toast.LENGTH_SHORT).show();
+    }
+
+   /* //    gdrive upload
+    public void requestSignIn() {
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                .build();
+
+        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
+        startActivityForResult(client.getSignInIntent(), 400);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case 400:
+                if (resultCode == RESULT_OK) {
+                    handleSignIntent(data);
+                }
+                break;
+        }
+    }
+
+    private void handleSignIntent(Intent data) {
+        GoogleSignIn.getSignedInAccountFromIntent(data)
+                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                        GoogleAccountCredential credential = GoogleAccountCredential.
+                                usingOAuth2(MainActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                        credential.setSelectedAccount(googleSignInAccount.getAccount());
+
+                        Drive googleDriveService = new Drive.Builder(
+                                AndroidHttp.newCompatibleTransport(),
+                                new GsonFactory(),
+                                credential)
+                                .setApplicationName("BrainTrain GD Backup")
+                                .build();
+
+                        googleDriverServiceHelper = new GoogleDriverServiceHelper(googleDriveService);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    public void backupDB(View view) {
+        String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
+        System.out.println(filePath+"database is here");
+        *//*verifyStoragePermissions(this);*//*
+        requestSignIn();
+
+        googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                uploadedFiledId = s;
+                Toast.makeText(getApplicationContext(), connDB.DBNAME+" is uploaded successfully", Toast.LENGTH_LONG).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), filePath+ "\n check you gdrive api key", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+//    storing in internal memory or can directly place to db location
+    public void downloadDB(View view) throws FileNotFoundException {
+//        String fileId = "1yixXsEUahVbykOPgm_FsPcVU-0kx4q66";
+        System.out.println(uploadedFiledId);
+        String filePath = "/storage/emulated/0/"+connDB.DBNAME;
+        googleDriverServiceHelper.callDownload(uploadedFiledId, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Toast.makeText(getApplicationContext(), filePath+" is downloaded successfully", Toast.LENGTH_LONG).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), filePath+" please check your ID or gd api key", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    public void verifyStoragePermissions(Activity activity) {
+
+        final int REQUEST_EXTERNAL_STORAGE = 1;
+        String[] PERMISSIONS_STORAGE = {
+
+                //Manifest.permission.READ_EXTERNAL_STORAGE,f
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+
+        int permission = ActivityCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if(permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }*/
+
+//    end gdrive upload
 }

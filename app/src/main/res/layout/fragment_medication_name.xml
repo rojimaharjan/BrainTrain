@@ -26,7 +26,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/firstname_text_input"
+        android:id="@+id/MedicationName_text_input"
         style="@style/Widget.Shrine.TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_marginBottom="30dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username_edit_text"
+            android:id="@+id/MedicationNameTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"

@@ -60,5 +60,6 @@
     <string name="error_invalidDOB">Invalid date of birth!</string>
     <string name="rememberme">Remember me</string>
     <string name="error_username">Username incorrect!!</string>
+    <string name="error_medicationname">Enter medicaiton name.</string>
 
 </resources>

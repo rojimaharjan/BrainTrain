@@ -90,7 +90,7 @@
                 android:layout_below="@+id/userName"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/AddMed_button"
+                android:id="@+id/AddToDrive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -99,7 +99,9 @@
                 android:backgroundTint="@android:color/transparent"
                 app:icon="@drawable/icons8_google_drive_32"
                 app:iconTintMode="multiply"
-                />
+                android:onClick="backupDB"
+                android:text="Drive"
+                tools:ignore="OnClick" />
 
         </RelativeLayout>
         <View
@@ -107,6 +109,20 @@
             android:layout_width="match_parent"
             android:layout_height="1.5dp"
             android:background="?android:attr/listDivider" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/download_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@android:color/black"
+            android:backgroundTint="@android:color/transparent"
+            app:icon="@drawable/icons8_google_drive_32"
+            app:iconTintMode="multiply"
+            android:onClick="downloadDB"
+            tools:ignore="OnClick"
+            android:text="Download"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

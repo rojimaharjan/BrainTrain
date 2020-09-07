@@ -21,10 +21,13 @@ public class MedicationRepository {
 
     }
 
-    public void insert(Medication medication){
+    public AsyncTask<Medication, Void, Long> insert(Medication medication){
+        return new MedicationRepository.InsertMedicationAsyncTask(medicationDao).execute(medication);
+    }
+/*    public void insert(Medication medication){
 
         new MedicationRepository.InsertMedicationAsyncTask(medicationDao).execute(medication);
-    }
+    }*/
     public void update(Medication medication){
         new MedicationRepository.UpdateMedicationAsyncTask(medicationDao).execute(medication);
     }
@@ -41,16 +44,16 @@ public class MedicationRepository {
 
     }
 
-    private static class InsertMedicationAsyncTask extends AsyncTask<Medication, Void, Void> {
+    private static class InsertMedicationAsyncTask extends AsyncTask<Medication, Void, Long> {
         private MedicationDao medicationDao;
 
         private InsertMedicationAsyncTask(MedicationDao medicationDao){
             this.medicationDao = medicationDao;
         }
         @Override
-        protected Void doInBackground(Medication... medications) {
-            medicationDao.insert(medications[0]);
-            return null;
+        protected Long doInBackground(Medication... medications) {
+            return medicationDao.insert(medications[0]);
+//            return null;
         }
     }
 

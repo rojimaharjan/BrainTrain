@@ -36,14 +36,19 @@ import static java.lang.System.in;
 public class LoginFragment extends Fragment {
     private UserDao userDao;
     MaterialCheckBox remember;
-    MaterialButton nextButton, signupButton;
+    MaterialButton nextButton, signupButton , downloadButton;
+    TextInputEditText passwordEditText;
+    Boolean rememberMe = false;
+    private BrainTrainDatabase connDB;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
         final TextInputLayout passwordTextInput = view.findViewById(R.id.username_text_input);
-        final TextInputEditText passwordEditText = view.findViewById(R.id.username_edit_text);
+        passwordEditText = view.findViewById(R.id.username_edit_text);
+        downloadButton = view.findViewById(R.id.download_button);
 
-        userDao = Room.databaseBuilder(getActivity(), BrainTrainDatabase.class, "user").allowMainThreadQueries().build().userDao();
+        userDao = Room.databaseBuilder(getActivity(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build().userDao();
         nextButton = view.findViewById(R.id.signIn_button);
         signupButton = view.findViewById(R.id.signUp_button);
         remember = view.findViewById(R.id.rememberme);
@@ -56,15 +61,19 @@ public class LoginFragment extends Fragment {
         remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-
-                SaveInSharedPreference(isChecked);
-//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
-                /*SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("RememberMe", true);
-                editor.apply();*/
+                rememberMe = true;
             }
         });
 
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*((MainActivity)getActivity()).verifyStoragePermissions(getActivity());
+                ((MainActivity)getActivity()).requestSignIn();*/
+                System.out.println("empty function");
+
+            }
+        });
         // Set an error if the password is less than 8 characters.
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +82,9 @@ public class LoginFragment extends Fragment {
                     passwordTextInput.setError(getString(R.string.error_username));
                 } else {
                     passwordTextInput.setError(null); // Clear the error
-                    ((NavigationHost) getActivity()).navigateTo(new HomeFragment(),"Home",  false); // Navigate to the next Fragment
+//save in preference
+                    SaveInSharedPreference(rememberMe);
+                    ((NavigationHost) getActivity()).navigateTo(new HomeFragment(),passwordEditText.getText().toString(),  false); // Navigate to the next Fragment
                 }
             }
         });
@@ -104,6 +115,7 @@ public class LoginFragment extends Fragment {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("RememberMe", isChecked);
+        editor.putString("currentUser", passwordEditText.getText().toString() );
         editor.apply();
     }
 

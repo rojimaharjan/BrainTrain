@@ -26,8 +26,9 @@ public interface UserDao {
     @Query("DELETE FROM user_table")
     void deleteAllUsers();
 
-    @Query("SELECT * FROM user_table")
+    @Query("SELECT * FROM user_table ORDER BY userId DESC LIMIT 1")
     List<User> getAllUsers();
+
 
     /*@Query("SELECT * FROM user_table WHERE username = :username")
     User getUser(User username);*/

@@ -40,13 +40,15 @@ public abstract class BrainTrainDatabase extends RoomDatabase {
     public abstract DurationDao durationDao();
     public abstract AlarmDao alarmDao();
     public abstract UserInfoDao userInfoDao();
+    public static final String DBNAME = "main_database.db";
 
 
     public static synchronized BrainTrainDatabase getInstance(Context context){
         if(instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    BrainTrainDatabase.class, "main_database")
+                    BrainTrainDatabase.class, "/storage/emulated/0/"+DBNAME)
                     .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .addCallback(roomCallback)
                     .build();
         }

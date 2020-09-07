@@ -44,9 +44,10 @@ public class SuccessFragment extends Fragment {
         gotoSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);*/
-                ((NavigationHost) getActivity()).navigateTo(new LoginFragment(),"",  false);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+//                transaction.addToBackStack(null)
+                startActivity(intent);
+//                ((NavigationHost) getActivity()).navigateTo(new LoginFragment(),"",  false);
             }
         });
 

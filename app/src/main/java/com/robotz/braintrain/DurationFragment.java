@@ -2,6 +2,7 @@ package com.robotz.braintrain;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -30,12 +31,15 @@ import com.google.android.material.radiobutton.MaterialRadioButton;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class DurationFragment extends Fragment implements DatePickerDialog.OnDateSetListener, NumberPicker.OnValueChangeListener {
     //    DatePickerDialog.OnDateSetListener start_dateListener, until_datelistener;
 //    int start_year, start_month, start_day, until_year, until_month, until_day;
     boolean isStartDate, isEndDate;
     private onDateChangedListener listener;
 //    private onDaysChangedListener listener;
+    SharedPreferences sharedPreferences;
 
     public CharSequence dateValue;
 
@@ -47,12 +51,18 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
         void setDateValue(String date);
     }
 
+    /*SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();*/
+
+
     String Duration;
     String SubDuration;
     TextView startdate;
     Toolbar toolbar;
     RadioGroup radiodurationbtn;
     RelativeLayout durationExtraL;
+    AddMedicationFragment amf = new AddMedicationFragment();
+    Bundle args = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,6 +103,7 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
                                 isStartDate = false;
                                 isEndDate = true;
 
+
                             }
                         });
                         break;
@@ -108,7 +119,6 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
                             @Override
                             public void onClick(View v) {
                                 showNumberPicker(v);
-
                             }
                         });
                         break;
@@ -116,6 +126,11 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
                         for (Fragment fragment : getChildFragmentManager().getFragments()) {
                             getChildFragmentManager().beginTransaction().remove(fragment).commit();
                         }
+                        sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("Duration", "No end date");
+                        editor.putString("SubDuration", "");
+                        editor.apply();
                 }
             }
         });
@@ -136,6 +151,11 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
         int day = i1;
         TextView daytxt =  getActivity().findViewById(R.id.daysTxt);
         daytxt.setText(Integer.toString(day));
+        sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Duration", "For X days");
+        editor.putString("SubDuration", String.valueOf(day));
+        editor.apply();
         return;
     }
 
@@ -153,16 +173,27 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
     public void onDateSet(DatePicker datePicker, int year, int month, int daysOfMonth) {
         dateValue = daysOfMonth + "/" + month + "/" + year;
 //        startdate.setText(dateValue.toString());
+
         if (isStartDate) {
             startdate.setText(dateValue);
+            sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("StartDate", dateValue.toString());
+            editor.apply();
             return;
         }else if(isEndDate)
         {
             TextView tct =  getActivity().findViewById(R.id.dateTxt);
             tct.setText(dateValue);
+            sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Duration", "Until date");
+            editor.putString("SubDuration", dateValue.toString());
+            editor.apply();
             return;
         }
     }
+
 
 
 }

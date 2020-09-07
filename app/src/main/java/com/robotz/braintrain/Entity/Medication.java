@@ -8,15 +8,17 @@ import androidx.room.PrimaryKey;
 import java.util.Date;
 
 
-@Entity(tableName = "medication_table", foreignKeys = @ForeignKey(entity = User.class,
-        parentColumns = "userId",
-        childColumns = "userId",
-        onDelete = ForeignKey.NO_ACTION))
+@Entity(tableName = "medication_table")
 
 public class Medication {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ForeignKey(entity = User.class,
+            parentColumns = "userId",
+            childColumns = "userId",
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE)
     private int userId;
     private String med_name;
     private String type;

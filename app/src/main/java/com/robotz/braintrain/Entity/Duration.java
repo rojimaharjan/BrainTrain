@@ -6,19 +6,19 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "duration_table", foreignKeys = @ForeignKey(entity = Medication.class,
-        parentColumns = "id",
-        childColumns = "medicationId",
-        onDelete = ForeignKey.NO_ACTION))
+@Entity(tableName = "duration_table")
 public class Duration {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ForeignKey(entity = Medication.class,
+            parentColumns = "id",
+            childColumns = "medicationId",
+            onDelete = ForeignKey.CASCADE)
     private int medicationId;
     private Date start_date;
-    private Date end_date;
-    private Date until_date;
-    private int for_x_days;
+    private String duration_type;
+    private String duration_time;
 
     public int getId() {
         return id;
@@ -28,12 +28,11 @@ public class Duration {
         this.id = id;
     }
 
-    public Duration(int medicationId, Date start_date, Date end_date, Date until_date, int for_x_days) {
+    public Duration(int medicationId, Date start_date, String duration_type, String duration_time) {
         this.medicationId = medicationId;
         this.start_date = start_date;
-        this.end_date = end_date;
-        this.until_date = until_date;
-        this.for_x_days = for_x_days;
+        this.duration_type = duration_type;
+        this.duration_time = duration_time;
     }
 
 
@@ -45,15 +44,12 @@ public class Duration {
         return start_date;
     }
 
-    public Date getEnd_date() {
-        return end_date;
+    public String getDuration_type() {
+        return duration_type;
     }
 
-    public Date getUntil_date() {
-        return until_date;
+    public String getDuration_time() {
+        return duration_time;
     }
 
-    public int getFor_x_days() {
-        return for_x_days;
-    }
 }

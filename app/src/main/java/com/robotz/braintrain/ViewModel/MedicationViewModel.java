@@ -1,6 +1,7 @@
 package com.robotz.braintrain.ViewModel;
 
 import android.app.Application;
+import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -22,8 +23,8 @@ public class MedicationViewModel extends AndroidViewModel {
         allMedications = medicationRepository.getAllMedications();
     }
 
-    public void insert(Medication medication){
-        medicationRepository.insert(medication);;
+    public AsyncTask<Medication, Void, Long> insert(Medication medication){
+        return medicationRepository.insert(medication);
     }
 
     public void update(Medication medication){

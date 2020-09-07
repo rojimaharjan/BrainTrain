@@ -25,7 +25,7 @@ import java.util.List;
 
 public class SignUpDiagnosisFragment extends Fragment {
 
-    private SignUpDiagnosisFragment.onFragmentDContinued listner;
+    private onFragmentDContinued listner;
     private List<String> diagnosis = new ArrayList<String>();
     ChipGroup chipGroup;
     TextInputEditText diagnosisText;

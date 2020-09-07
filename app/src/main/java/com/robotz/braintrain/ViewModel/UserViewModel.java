@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 
 import com.robotz.braintrain.Repository.UserRepository;
 import com.robotz.braintrain.Entity.User;
@@ -22,7 +21,7 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public void insert(User user){
-        userRepository.insert(user);;
+       userRepository.insert(user);;
     }
 
     public void update(User user){

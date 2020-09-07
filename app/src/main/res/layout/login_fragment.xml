@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="68dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="20dp">
 
             <ImageView
                 android:id="@+id/brain"
@@ -55,8 +55,8 @@
             android:layout_width="346dp"
             android:layout_height="266dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:background="#FFFFFF"
             app:srcCompat="@drawable/login_logo" />
 
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_username"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="1dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username_edit_text"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/rememberme"
             android:text="@string/rememberme"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="5dp"
             style="@style/TextAppearance.Shrine.BodySmall"
             />
 
@@ -120,6 +120,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/button_signup" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/download_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:backgroundTint="@android:color/transparent"
+                app:icon="@drawable/icons8_google_drive_32"
+                app:iconTintMode="multiply"
+                android:onClick="downloadDB"
+                android:layout_gravity="center_vertical|center_horizontal"
+                tools:ignore="OnClick"
+                android:text="Restore from drive?"/>
 
         </LinearLayout>
 
