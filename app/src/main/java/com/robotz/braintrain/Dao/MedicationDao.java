@@ -14,8 +14,11 @@ import java.util.List;
 @Dao
 public interface MedicationDao {
 
-    @Insert
-    Long insert(Medication medication);
+    /*@Insert
+    Long insert(Medication medication);*/
+
+    @Query("INSERT INTO medication_table (userId, med_name, type, as_needed) VALUES(:userId, :med_name, :type, :as_needed) ")
+    long insert(int userId, String med_name, String type, Boolean as_needed);
 
     @Update
     void update(Medication medication);
@@ -26,7 +29,7 @@ public interface MedicationDao {
     @Query("DELETE FROM medication_table")
     void deleteAllMedications();
 
-    @Query("SELECT * FROM medication_table WHERE userId = 'userid'")
+    @Query("SELECT * FROM medication_table")
     List<Medication> getAllMedications();
 
 }

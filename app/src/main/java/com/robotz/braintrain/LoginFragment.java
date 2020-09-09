@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -125,6 +126,7 @@ public class LoginFragment extends Fragment {
 
         if(text != null)
         {
+
             List<User> users = userDao.getAllUsers();
             Log.d("Users ", " "+ users);
             for (User u :
@@ -139,24 +141,9 @@ public class LoginFragment extends Fragment {
 
             isValid = false;
         }
+        userDao.checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
         return isValid;
     }
 
-/*
-        @Override
-    public void onResume() {
-        super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-        ((AppCompatActivity)getActivity()).findViewById(R.id.layout_frag).setVisibility(View.GONE);
-//            ((AppCompatActivity)getActivity()).findViewById(R.id.container_frag).setVisibility(View.GONE);
 
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((AppCompatActivity)getActivity()).findViewById(R.id.layout_frag).setVisibility(View.VISIBLE);
-//        ((AppCompatActivity)getActivity()).findViewById(R.id.container_frag).setVisibility(View.VISIBLE);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-    }*/
 }

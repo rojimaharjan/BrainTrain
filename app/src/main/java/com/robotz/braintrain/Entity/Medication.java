@@ -25,11 +25,13 @@ public class Medication {
     private boolean as_needed;
 
 
+    @ColumnInfo(defaultValue = "false")
+    private boolean delete;
+
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
     private Date modified_date;
 
-    @ColumnInfo(defaultValue = "false")
-    private boolean delete;
+
 
     public Medication(int userId, String med_name, String type, boolean as_needed) {
         this.userId = userId;

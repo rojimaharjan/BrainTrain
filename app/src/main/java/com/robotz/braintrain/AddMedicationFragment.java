@@ -152,33 +152,17 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
 
 //                listener.getMedicationData(medN, type, aN);
 
-                Medication medication = new Medication(1, medN, type, asNeeded);
-                Long id = medicationDao.insert(medication);
+//                Medication medication = new Medication(1, medN, type, asNeeded);
+                long id = medicationDao.insert(1, medN, type, asNeeded);
                 if(!aN){
-                    Duration duration = new Duration(id.intValue(), sDate, dur, durT);
+                    Duration duration = new Duration(((int) id), sDate, dur, durT);
                     durationDao.insert(duration);
-                    Frequency frequency = new Frequency(id.intValue(), fre, freT);
+                    Frequency frequency = new Frequency((int) id, fre, freT);
                     durationDao.insert(duration);
                 }
-                Toast.makeText(getContext(), "medication saved" + id.intValue()  , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "medication saved" +(int) id  , Toast.LENGTH_SHORT).show();
 
                 ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "", false);
-                /*Medication medication = new Medication(1, medName, type, aN);
-                AsyncTask<Medication, Void, Long> id = medicationViewModel.insert(medication);
-                Toast.makeText(getContext(), "id"+ id, Toast.LENGTH_SHORT).show();*/
-                /*Intent data = new Intent();
-                data.putExtra(EXTRA_MEDICATIONNAME, medN);
-                data.putExtra(EXTRA_ASNEEDED, aN);
-                data.putExtra(EXTRA_STARTDATE, sDate);
-                data.putExtra(EXTRA_TYPE, type);
-                data.putExtra(EXTRA_DURATION, dur);
-                data.putExtra(EXTRA_DURATIONTIME, durT);
-                data.putExtra(EXTRA_FREQUENCY, fre);
-                data.putExtra(EXTRA_FREQUENCYTIME, freT);
-                getActivity().setResult(Activity.RESULT_OK, data);
-                getActivity().finish();*/
-
-
             }
         });
 
@@ -226,7 +210,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
 
         return view;
     }
-    @Override
+/*    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if(context instanceof AddMedicationFragment.saveMedicationData){
@@ -242,7 +226,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     public void onDetach() {
         super.onDetach();
         listener = null;
-    }
+    }*/
 
 /*    @Override
     public void frequencyData(String frequency, String Subfrequency) {

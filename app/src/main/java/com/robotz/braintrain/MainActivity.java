@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import android.Manifest;
 import android.app.Activity;
@@ -60,7 +61,7 @@ import java.util.List;
 
 //import com.robotz.braintrain.ViewModel.UserViewModel;
 
-public class MainActivity extends AppCompatActivity implements NavigationHost, AddMedicationFragment.saveMedicationData{
+public class MainActivity extends AppCompatActivity implements NavigationHost{
     public static final int ADD_MED_REQUEST =1;
     Toolbar toolbar;
     private UserViewModel userViewModel;
@@ -266,13 +267,13 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
         }
     }*/
 
-    @Override
+/*    @Override
     public void getMedicationData(String medName, String type, boolean asNeeded) {
         medicationDao = Room.databaseBuilder(this, BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().medicationDao();
         Medication medication = new Medication(1, medName, type, asNeeded);
-        Long id = medicationDao.insert(medication);
+        long id = medicationDao.insert(medication);
         Toast.makeText(this, "medication saved"  , Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
 
     //    gdrive upload
@@ -328,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
     }
 
     public void backupDB(View view) {
-
+        userDao.checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
 
         googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {

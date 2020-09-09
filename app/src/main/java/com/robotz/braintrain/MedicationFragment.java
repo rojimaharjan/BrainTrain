@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
 import com.robotz.braintrain.Dao.MedicationDao;
+import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
 import com.robotz.braintrain.Entity.Medication;
+import com.robotz.braintrain.Entity.User;
 import com.robotz.braintrain.ViewModel.MedicationViewModel;
 import com.robotz.braintrain.network.MedicationEntry;
 import com.robotz.braintrain.network.ProductEntry;
@@ -32,6 +34,7 @@ public class MedicationFragment extends Fragment {
     public static final String EXTRA_DOB ="com.robotz.braintrain.EXTRA_DOB";
     public static final String EXTRA_DIAGNOSIS ="com.robotz.braintrain.EXTRA_DIAGNOSIS";
     public MedicationDao medicationDao;
+    private UserDao userDao;
     private BrainTrainDatabase connDB;
 
     @Override
@@ -43,7 +46,9 @@ public class MedicationFragment extends Fragment {
         ((NavigationHost) getActivity()).setUpToolbar(view);
         connDB = Room.databaseBuilder(getContext(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
         medicationDao = connDB.medicationDao();
+        userDao = connDB.userDao();
         List<Medication> medications = medicationDao.getAllMedications();
+        List<User> users = userDao.getAllUsers();
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_medicationName);
         recyclerView.setHasFixedSize(true);
