@@ -15,7 +15,7 @@ import java.util.List;
 public class MedicationViewModel extends AndroidViewModel {
 
     private MedicationRepository medicationRepository;
-    private LiveData<List<Medication>> allMedications;
+    private List<Medication> allMedications;
     public MedicationViewModel(@NonNull Application application) {
         super(application);
 
@@ -40,7 +40,7 @@ public class MedicationViewModel extends AndroidViewModel {
         medicationRepository.deleteAllMedications();
     }
 
-    public LiveData<List<Medication>> getAllMedications(){
+    public List<Medication> getAllMedications(){
         return allMedications;
     }
 }

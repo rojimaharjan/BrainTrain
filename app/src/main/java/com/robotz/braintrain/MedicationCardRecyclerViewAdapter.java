@@ -18,15 +18,15 @@ import java.util.List;
 
 public class MedicationCardRecyclerViewAdapter extends RecyclerView.Adapter<MedicationCardViewHolder> {
 
-    private List<Medication> medications = new ArrayList<>();
+    private List<Medication> medications;
 
- /*   public MedicationCardRecyclerViewAdapter(List<Medication> medicationList) {
-        this.medicationList = medicationList;
-    }*/
-
-    public MedicationCardRecyclerViewAdapter() {
+    public MedicationCardRecyclerViewAdapter(List<Medication> medications) {
         this.medications = medications;
     }
+
+   /* public MedicationCardRecyclerViewAdapter() {
+        this.medications = medications;
+    }*/
 
     @NonNull
     @Override
@@ -40,6 +40,7 @@ public class MedicationCardRecyclerViewAdapter extends RecyclerView.Adapter<Medi
         Medication medication = medications.get(position);
         holder.MedicationName.setText(medication.getMed_name());
         holder.Unit.setText(medication.getType());
+
     /*    if (medications != null && position < medications.size()) {
             holder.MedicationName.setText(medication.getMed_name());
             holder.Unit.setText(medication.getType());
@@ -54,6 +55,13 @@ public class MedicationCardRecyclerViewAdapter extends RecyclerView.Adapter<Medi
 
     @Override
     public int getItemCount() {
+        /*int no = medicationList.size();
+        if(no < 0){
+            return 0;
+        }else{
+
+            return no;
+        }*/
         return medications.size();
     }
 }

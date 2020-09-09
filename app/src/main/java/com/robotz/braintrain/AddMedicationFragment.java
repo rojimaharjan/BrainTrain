@@ -72,6 +72,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     private MedicationDao medicationDao;
     private FrequencyDao frequencyDao;
     private DurationDao durationDao;
+    public BrainTrainDatabase connDB;
 
 
     @Override
@@ -79,6 +80,10 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_medication, container, false);
+        connDB = Room.databaseBuilder(getContext(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
+        medicationDao = connDB.medicationDao();
+        frequencyDao = connDB.frequencyDao();
+        durationDao = connDB.durationDao();
 
         durationLL = view.findViewById(R.id.DurationLayout);
         frequencyLL = view.findViewById(R.id.FrequencyLayout);
@@ -146,9 +151,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                 String fre = frequency.getText().toString();
 
 //                listener.getMedicationData(medN, type, aN);
-                medicationDao = Room.databaseBuilder(getContext(), BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().medicationDao();
-                frequencyDao = Room.databaseBuilder(getContext(), BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().frequencyDao();
-                durationDao = Room.databaseBuilder(getContext(), BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().durationDao();
+
                 Medication medication = new Medication(1, medN, type, asNeeded);
                 Long id = medicationDao.insert(medication);
                 if(!aN){

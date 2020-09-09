@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/loginPageBackgroundColor"
-    tools:context=".LoginFragment">
+    tools:context=".SuccessFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             >
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/signIn_button"
+                android:id="@+id/goToSignIn_button"
                 style="@style/Widget.Shrine.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

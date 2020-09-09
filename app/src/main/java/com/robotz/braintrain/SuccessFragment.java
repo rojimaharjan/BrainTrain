@@ -32,7 +32,7 @@ public class SuccessFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_success, container, false);
         yourUsername = view.findViewById(R.id.usernameOutput);
-        gotoSignin = view.findViewById(R.id.signIn_button);
+        gotoSignin = view.findViewById(R.id.goToSignIn_button);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
         if (sharedPreferences.getString("Username", null) != null) {
             String username =""+sharedPreferences.getString("Username", "");

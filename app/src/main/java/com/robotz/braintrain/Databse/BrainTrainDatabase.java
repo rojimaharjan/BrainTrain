@@ -73,8 +73,8 @@ public abstract class BrainTrainDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(Void... voids) {
 //            userDao.insert(new User("roji", "Maharjan", "rojmah1990"));
-            userDao.insert(new User("Roji", "Maharjan", "rojimaharjan"));
-            medicationDao.insert(new Medication( 1, "ABCD", "pills", true));
+          /*  userDao.insert(new User("Roji", "Maharjan", "rojimaharjan"));
+            medicationDao.insert(new Medication( 1, "ABCD", "pills", true));*/
             return null;
         }
     }

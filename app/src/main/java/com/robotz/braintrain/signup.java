@@ -108,11 +108,6 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         frag.getUsername(username.toString());*/
         Toast.makeText(this, ""+FathersFirstName+ "  "+ MothersMaidenName +" "+ idForUser , Toast.LENGTH_LONG).show();
 
-//        SharedPreferences sharedPreferences = Context.getSharedPreferences("app", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-//        String Username = username.;
-//        editor.putString("Username", Username);
-//        editor.commit();
 
         SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("app", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -150,118 +145,6 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         return username;
     }
 
-  /*  //    gdrive upload
-    private void requestSignIn() {
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
-                .build();
 
-        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
-        startActivityForResult(client.getSignInIntent(), 400);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case 400:
-                if (resultCode == RESULT_OK) {
-                    handleSignIntent(data);
-                }
-                break;
-        }
-    }
-
-    private void handleSignIntent(Intent data) {
-        GoogleSignIn.getSignedInAccountFromIntent(data)
-                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
-                    @Override
-                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                        GoogleAccountCredential credential = GoogleAccountCredential.
-                                usingOAuth2(signup.this, Collections.singleton(DriveScopes.DRIVE_FILE));
-                        credential.setSelectedAccount(googleSignInAccount.getAccount());
-
-                        Drive googleDriveService = new Drive.Builder(
-                                AndroidHttp.newCompatibleTransport(),
-                                new GsonFactory(),
-                                credential)
-                                .setApplicationName("BrainTrain GD Backup")
-                                .build();
-
-                        googleDriverServiceHelper = new GoogleDriverServiceHelper(googleDriveService);
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
-    }
-
-    public void backupDB(View view) {
-        String DBNAME = "main_database";
-        String filePath = this.getDatabasePath(DBNAME).getAbsolutePath();
-
-        googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                Toast.makeText(getApplicationContext(), DBNAME+" is uploaded successfully", Toast.LENGTH_LONG).show();
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), filePath+ "\n check you gdrive api key", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void downloadDB(View view) {
-        String fileId = "11RIqrEladA8uwaSB_4rUz7bmU10EeVQmdd";
-
-        googleDriverServiceHelper.callDownload(fileId).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                Toast.makeText(getApplicationContext(), fileId+" is downloaded successfully", Toast.LENGTH_LONG).show();
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), fileId+" please check your ID or gd api key", Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
-
-    public void verifyStoragePermissions(Activity activity) {
-
-        final int REQUEST_EXTERNAL_STORAGE = 1;
-        String[] PERMISSIONS_STORAGE = {
-
-                //Manifest.permission.READ_EXTERNAL_STORAGE,f
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-
-        int permission = ActivityCompat.checkSelfPermission(
-                activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if(permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
-
-//    end gdrive upload*/
 
 }

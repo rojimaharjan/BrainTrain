@@ -27,6 +27,6 @@ public interface MedicationDao {
     void deleteAllMedications();
 
     @Query("SELECT * FROM medication_table WHERE userId = 'userid'")
-    LiveData<List<Medication>> getAllMedications();
+    List<Medication> getAllMedications();
 
 }

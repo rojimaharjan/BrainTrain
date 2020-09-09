@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MedicationRepository {
     private MedicationDao medicationDao;
-    private LiveData<List<Medication>> allMedications;
+    private List<Medication> allMedications;
     public MedicationRepository(Application application){
         BrainTrainDatabase database = BrainTrainDatabase.getInstance(application);
         medicationDao = database.medicationDao();
@@ -39,7 +39,7 @@ public class MedicationRepository {
         new MedicationRepository.DeleteAllMedicationsAsyncTask(medicationDao).execute();
     }
 
-    public LiveData<List<Medication>> getAllMedications(){
+    public List<Medication> getAllMedications(){
         return allMedications;
 
     }
