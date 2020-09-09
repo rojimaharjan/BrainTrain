@@ -5,7 +5,9 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.robotz.braintrain.Entity.User;
 
@@ -26,8 +28,13 @@ public interface UserDao {
     @Query("DELETE FROM user_table")
     void deleteAllUsers();
 
-    @Query("SELECT * FROM user_table ORDER BY userId DESC LIMIT 1")
+
+    @Query("SELECT * FROM user_table")
     List<User> getAllUsers();
+
+
+    @RawQuery
+    int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
 
 
     /*@Query("SELECT * FROM user_table WHERE username = :username")

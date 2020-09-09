@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -48,7 +49,10 @@ public class LoginFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.username_edit_text);
         downloadButton = view.findViewById(R.id.download_button);
 
-        userDao = Room.databaseBuilder(getActivity(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build().userDao();
+        connDB = Room.databaseBuilder(getActivity(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
+        userDao = connDB.userDao();
+
+
         nextButton = view.findViewById(R.id.signIn_button);
         signupButton = view.findViewById(R.id.signUp_button);
         remember = view.findViewById(R.id.rememberme);
@@ -139,6 +143,7 @@ public class LoginFragment extends Fragment {
 
             isValid = false;
         }
+        userDao.checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
         return isValid;
     }
 

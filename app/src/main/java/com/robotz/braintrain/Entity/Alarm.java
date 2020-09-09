@@ -8,14 +8,15 @@ import androidx.room.util.TableInfo;
 
 import java.sql.Time;
 
-@Entity(tableName = "alarm_table", foreignKeys = @ForeignKey(entity = Medication.class,
-        parentColumns = "id",
-        childColumns = "medicationId",
-        onDelete = ForeignKey.NO_ACTION))
+@Entity(tableName = "alarm_table")
 public class Alarm {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ForeignKey(entity = Medication.class,
+            parentColumns = "id",
+            childColumns = "medicationId",
+            onDelete = ForeignKey.NO_ACTION)
     private int medicationId;
     private int alarm_time_hour;
     private int alarm_time_minute;

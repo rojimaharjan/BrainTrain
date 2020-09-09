@@ -7,14 +7,15 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "score_table", foreignKeys = @ForeignKey(entity = User.class,
-        parentColumns = "userId",
-        childColumns = "userId",
-        onDelete =ForeignKey.NO_ACTION))
+@Entity(tableName = "score_table")
 public class Score {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ForeignKey(entity = User.class,
+            parentColumns = "userId",
+            childColumns = "userId",
+            onDelete =ForeignKey.NO_ACTION)
     private int userId;
     private String game_name;
     private String total_score;

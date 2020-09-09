@@ -52,8 +52,8 @@ public class MedicationRepository {
         }
         @Override
         protected Long doInBackground(Medication... medications) {
-            return medicationDao.insert(medications[0]);
-//            return null;
+//            return medicationDao.insert(medications[0]);
+            return null;
         }
     }
 

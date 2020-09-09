@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import android.Manifest;
 import android.app.Activity;
@@ -60,7 +61,7 @@ import java.util.List;
 
 //import com.robotz.braintrain.ViewModel.UserViewModel;
 
-public class MainActivity extends AppCompatActivity implements NavigationHost, AddMedicationFragment.saveMedicationData{
+public class MainActivity extends AppCompatActivity implements NavigationHost{
     public static final int ADD_MED_REQUEST =1;
     Toolbar toolbar;
     private UserViewModel userViewModel;
@@ -120,19 +121,6 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
 
         connDB = Room.databaseBuilder(this, BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
         userDao = connDB.userDao();
-
-//        medicationViewModel.getAllMedications();
-
-        /*toolbar = findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-        ProductGridFragment frag  = new ProductGridFragment();
-        toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
-                MainActivity.this,
-                findViewById(R.id.container_frag),
-                new AccelerateDecelerateInterpolator(),
-                MainActivity.this.getResources().getDrawable(R.drawable.shr_menu), // Menu open icon
-                MainActivity.this.getResources().getDrawable(R.drawable.shr_close_menu))); // Menu close icon*/
-
 
     }
 
@@ -266,13 +254,13 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
         }
     }*/
 
-    @Override
+/*    @Override
     public void getMedicationData(String medName, String type, boolean asNeeded) {
         medicationDao = Room.databaseBuilder(this, BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().medicationDao();
         Medication medication = new Medication(1, medName, type, asNeeded);
         Long id = medicationDao.insert(medication);
         Toast.makeText(this, "medication saved"  , Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
 
     //    gdrive upload
@@ -328,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
     }
 
     public void backupDB(View view) {
-
+        userDao.checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
 
         googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {
@@ -357,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
             @Override
             public void onSuccess(String s) {
                 System.out.println(s);
+                soutUsers();
                 Toast.makeText(getApplicationContext(), uploadedFileID+" is downloaded successfully", Toast.LENGTH_LONG).show();
             }
         })
@@ -367,15 +356,12 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
                     }
                 });
 
-//        moveDB();
-        soutUsers();
 
     }
 
 
 
     public void restoreDBCheck() {
-        connDB.close();
         //        deleteing exiting db
         File databases = new File(this.getApplicationInfo().dataDir+"/databases");
         File db = new File(databases, connDB.DBNAME);
@@ -395,36 +381,36 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
         }
     }
 
-    public void moveDB () throws IOException {
-        //   copying db from internal storage to app db location
-        String moveFrom = "/storage/emulated/0/"+connDB.DBNAME;
-        String moveTo = this.getDatabasePath(connDB.DBNAME).getPath();
-//        String moveTo = "/storage/emulated/0/BrainTrain/"+connDB.DBNAME;
-
-//        Files.copy
-        File src = new File(moveFrom);
-        File dest = new File(moveTo);
-
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = new FileInputStream(src);
-            os = new FileOutputStream(dest);
-            // buffer size 1K
-            byte[] buf = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(buf)) > 0) {
-                os.write(buf, 0, bytesRead);
-            }
-        } finally { is.close(); os.close(); }
-
-        if (!is.equals(null) && !os.equals(null) && this.getDatabasePath(connDB.DBNAME).exists()) {
-            Toast.makeText(this, "DB restored/moved successfully", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Couldn't move db file", Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    public void moveDB () throws IOException {
+//        //   copying db from internal storage to app db location
+//        String moveFrom = "/storage/emulated/0/"+connDB.DBNAME;
+//        String moveTo = this.getDatabasePath(connDB.DBNAME).getPath();
+////        String moveTo = "/storage/emulated/0/BrainTrain/"+connDB.DBNAME;
+//
+////        Files.copy
+//        File src = new File(moveFrom);
+//        File dest = new File(moveTo);
+//
+//        InputStream is = null;
+//        OutputStream os = null;
+//        try {
+//            is = new FileInputStream(src);
+//            os = new FileOutputStream(dest);
+//            // buffer size 1K
+//            byte[] buf = new byte[1024];
+//            int bytesRead;
+//            while ((bytesRead = is.read(buf)) > 0) {
+//                os.write(buf, 0, bytesRead);
+//            }
+//        } finally { is.close(); os.close(); }
+//
+//        if (!is.equals(null) && !os.equals(null) && this.getDatabasePath(connDB.DBNAME).exists()) {
+//            Toast.makeText(this, "DB restored/moved successfully", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "Couldn't move db file", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     public void soutUsers() {
 
@@ -461,3 +447,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
         }
     }
 }
+
+
+
+//C:\Users\subash\Documents\AndroidStudio\DeviceExplorer\motorola-moto_g_7__play-ZY323X35WB\data\data\com.robotz.braintrain
