@@ -16,7 +16,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "E:/Masters/Game/BrainTrain/app/schemas".toString()]
+//                arguments = ["room.schemaLocation": "E:/Masters/Game/BrainTrain/app/schemas".toString()]
             }
         }
     }

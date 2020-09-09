@@ -52,7 +52,7 @@ public class MedicationRepository {
         }
         @Override
         protected Long doInBackground(Medication... medications) {
-//            return medicationDao.insert(userId, String med_name, String type, boolean n);
+//            return medicationDao.insert(medications[0]);
             return null;
         }
     }

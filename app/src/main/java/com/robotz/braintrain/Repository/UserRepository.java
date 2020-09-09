@@ -3,6 +3,8 @@ package com.robotz.braintrain.Repository;
 import android.app.Application;
 import android.os.AsyncTask;
 
+import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
 import com.robotz.braintrain.Entity.User;

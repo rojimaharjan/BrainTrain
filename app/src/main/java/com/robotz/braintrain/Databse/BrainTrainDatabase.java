@@ -42,41 +42,23 @@ public abstract class BrainTrainDatabase extends RoomDatabase {
     public abstract UserInfoDao userInfoDao();
     public static final String DBNAME = "main_database.db";
 
+    private static BrainTrainDatabase INSTANCE;
 
     public static synchronized BrainTrainDatabase getInstance(Context context){
-        if(instance == null){
-            instance = Room.databaseBuilder(context.getApplicationContext(),
+        if(INSTANCE == null){
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     BrainTrainDatabase.class, "/storage/emulated/0/"+DBNAME)
-                    .fallbackToDestructiveMigration()
-                    .allowMainThreadQueries()
-                    .addCallback(roomCallback)
+                    .setJournalMode(JournalMode.TRUNCATE)
                     .build();
         }
-        return instance;
+        return INSTANCE ;
     }
 
-    private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback(){
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-            new PopulateDbAsyncTask(instance).execute();
-        }
-    };
-
-    private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void> {
-        private UserDao userDao;
-        private MedicationDao medicationDao;
-        private PopulateDbAsyncTask (BrainTrainDatabase db){
-            userDao =db.userDao();
-            medicationDao =db.medicationDao();
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-//            userDao.insert(new User("roji", "Maharjan", "rojmah1990"));
-            userDao.insert(new User("Roji", "Maharjan", "rojimaharjan"));
-//            medicationDao.insert(new Medication( 1, "ABCD", "pills", true));
-            return null;
-        }
+    // close database
+    public static void destroyInstance(){
+        if (INSTANCE.isOpen()) INSTANCE.close();
+        INSTANCE = null;
     }
+
 
 }

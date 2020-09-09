@@ -122,19 +122,6 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         connDB = Room.databaseBuilder(this, BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
         userDao = connDB.userDao();
 
-//        medicationViewModel.getAllMedications();
-
-        /*toolbar = findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-        ProductGridFragment frag  = new ProductGridFragment();
-        toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
-                MainActivity.this,
-                findViewById(R.id.container_frag),
-                new AccelerateDecelerateInterpolator(),
-                MainActivity.this.getResources().getDrawable(R.drawable.shr_menu), // Menu open icon
-                MainActivity.this.getResources().getDrawable(R.drawable.shr_close_menu))); // Menu close icon*/
-
-
     }
 
 
@@ -358,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
             @Override
             public void onSuccess(String s) {
                 System.out.println(s);
+                soutUsers();
                 Toast.makeText(getApplicationContext(), uploadedFileID+" is downloaded successfully", Toast.LENGTH_LONG).show();
             }
         })
@@ -368,15 +356,12 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
                     }
                 });
 
-//        moveDB();
-        soutUsers();
 
     }
 
 
 
     public void restoreDBCheck() {
-        connDB.close();
         //        deleteing exiting db
         File databases = new File(this.getApplicationInfo().dataDir+"/databases");
         File db = new File(databases, connDB.DBNAME);
@@ -396,36 +381,36 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         }
     }
 
-    public void moveDB () throws IOException {
-        //   copying db from internal storage to app db location
-        String moveFrom = "/storage/emulated/0/"+connDB.DBNAME;
-        String moveTo = this.getDatabasePath(connDB.DBNAME).getPath();
-//        String moveTo = "/storage/emulated/0/BrainTrain/"+connDB.DBNAME;
-
-//        Files.copy
-        File src = new File(moveFrom);
-        File dest = new File(moveTo);
-
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = new FileInputStream(src);
-            os = new FileOutputStream(dest);
-            // buffer size 1K
-            byte[] buf = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(buf)) > 0) {
-                os.write(buf, 0, bytesRead);
-            }
-        } finally { is.close(); os.close(); }
-
-        if (!is.equals(null) && !os.equals(null) && this.getDatabasePath(connDB.DBNAME).exists()) {
-            Toast.makeText(this, "DB restored/moved successfully", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Couldn't move db file", Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    public void moveDB () throws IOException {
+//        //   copying db from internal storage to app db location
+//        String moveFrom = "/storage/emulated/0/"+connDB.DBNAME;
+//        String moveTo = this.getDatabasePath(connDB.DBNAME).getPath();
+////        String moveTo = "/storage/emulated/0/BrainTrain/"+connDB.DBNAME;
+//
+////        Files.copy
+//        File src = new File(moveFrom);
+//        File dest = new File(moveTo);
+//
+//        InputStream is = null;
+//        OutputStream os = null;
+//        try {
+//            is = new FileInputStream(src);
+//            os = new FileOutputStream(dest);
+//            // buffer size 1K
+//            byte[] buf = new byte[1024];
+//            int bytesRead;
+//            while ((bytesRead = is.read(buf)) > 0) {
+//                os.write(buf, 0, bytesRead);
+//            }
+//        } finally { is.close(); os.close(); }
+//
+//        if (!is.equals(null) && !os.equals(null) && this.getDatabasePath(connDB.DBNAME).exists()) {
+//            Toast.makeText(this, "DB restored/moved successfully", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "Couldn't move db file", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     public void soutUsers() {
 
@@ -462,3 +447,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         }
     }
 }
+
+
+
+//C:\Users\subash\Documents\AndroidStudio\DeviceExplorer\motorola-moto_g_7__play-ZY323X35WB\data\data\com.robotz.braintrain

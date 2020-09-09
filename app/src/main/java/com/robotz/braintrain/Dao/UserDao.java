@@ -28,8 +28,13 @@ public interface UserDao {
     @Query("DELETE FROM user_table")
     void deleteAllUsers();
 
-    @Query("SELECT * FROM user_table ORDER BY userId DESC LIMIT 1")
+
+    @Query("SELECT * FROM user_table")
     List<User> getAllUsers();
+
+    @RawQuery
+    int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
+
 
     @RawQuery
     int checkpoint(SupportSQLiteQuery supportSQLiteQuery);

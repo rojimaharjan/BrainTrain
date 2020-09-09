@@ -49,7 +49,10 @@ public class LoginFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.username_edit_text);
         downloadButton = view.findViewById(R.id.download_button);
 
-        userDao = Room.databaseBuilder(getActivity(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build().userDao();
+        connDB = Room.databaseBuilder(getActivity(), BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
+        userDao = connDB.userDao();
+
+
         nextButton = view.findViewById(R.id.signIn_button);
         signupButton = view.findViewById(R.id.signUp_button);
         remember = view.findViewById(R.id.rememberme);
