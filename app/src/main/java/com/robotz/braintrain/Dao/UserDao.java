@@ -36,11 +36,4 @@ public interface UserDao {
     int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
 
 
-    @RawQuery
-    int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
-
-
-    /*@Query("SELECT * FROM user_table WHERE username = :username")
-    User getUser(User username);*/
-
 }
