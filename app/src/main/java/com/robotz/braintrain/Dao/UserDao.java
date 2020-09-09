@@ -35,5 +35,4 @@ public interface UserDao {
     @RawQuery
     int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
 
-
 }
