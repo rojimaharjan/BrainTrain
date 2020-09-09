@@ -124,7 +124,7 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         idForUser = userDao.insert(user);*/
         UserInfo userInfo = new UserInfo(idForUser.intValue(), Diagnosis.toString());
         userInfoDao.insert(userInfo);
-        /*db.close();*/
+        connDB.close();
 
     }
 

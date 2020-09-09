@@ -41,13 +41,22 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.robotz.braintrain.Dao.MedicationDao;
+import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
 import com.robotz.braintrain.Entity.Medication;
+import com.robotz.braintrain.Entity.User;
 import com.robotz.braintrain.ViewModel.MedicationViewModel;
 import com.robotz.braintrain.ViewModel.UserViewModel;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
+import java.util.List;
 
 //import com.robotz.braintrain.ViewModel.UserViewModel;
 
@@ -63,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
     public String uploadedFiledId;
     GoogleDriverServiceHelper googleDriverServiceHelper;
     private BrainTrainDatabase connDB;
+    private String uploadedFileID;
+    private UserDao userDao;
 
 
     @Override
@@ -81,8 +92,9 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        /*requestSignIn();*/
+        verifyStoragePermissions(this);
+        requestSignIn();
+
         sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
 //        boolean isNull = (sharedPreferences.getBoolean("rememeberme", ));
         if(sharedPreferences.getBoolean("rememeberme", false)!= false) {
@@ -107,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
         }
 
         connDB = Room.databaseBuilder(this, BrainTrainDatabase.class, connDB.DBNAME).allowMainThreadQueries().build();
+        userDao = connDB.userDao();
+
 //        medicationViewModel.getAllMedications();
 
         /*toolbar = findViewById(R.id.app_bar);
@@ -261,4 +275,189 @@ public class MainActivity extends AppCompatActivity implements NavigationHost, A
     }
 
 
+    //    gdrive upload
+    private void requestSignIn() {
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                .build();
+
+        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
+        startActivityForResult(client.getSignInIntent(), 400);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case 400:
+                if (resultCode == RESULT_OK) {
+                    handleSignIntent(data);
+                }
+                break;
+        }
+    }
+
+    private void handleSignIntent(Intent data) {
+        GoogleSignIn.getSignedInAccountFromIntent(data)
+                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                        GoogleAccountCredential credential = GoogleAccountCredential.
+                                usingOAuth2(MainActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                        credential.setSelectedAccount(googleSignInAccount.getAccount());
+
+                        Drive googleDriveService = new Drive.Builder(
+                                AndroidHttp.newCompatibleTransport(),
+                                new GsonFactory(),
+                                credential)
+                                .setApplicationName("BrainTrain GD Backup")
+                                .build();
+
+                        googleDriverServiceHelper = new GoogleDriverServiceHelper(googleDriveService);
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    public void backupDB(View view) {
+
+        String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
+
+        googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                uploadedFileID = s;
+                Toast.makeText(getApplicationContext(), connDB.DBNAME+" is uploaded successfully", Toast.LENGTH_LONG).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), filePath+ "\n check you gdrive api key", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void downloadDB(View view) throws FileNotFoundException {
+//        String fileId = "11RIqrEladA8uwaSB_4rUz7bmU10EeVQmdd";
+        String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
+        restoreDBCheck();
+
+        googleDriverServiceHelper.callDownload(uploadedFileID, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                System.out.println(s);
+                Toast.makeText(getApplicationContext(), uploadedFileID+" is downloaded successfully", Toast.LENGTH_LONG).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), uploadedFileID+" please check your ID or gd api key", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+//        moveDB();
+        soutUsers();
+
+    }
+
+
+
+    public void restoreDBCheck() {
+        connDB.close();
+        //        deleteing exiting db
+        File databases = new File(this.getApplicationInfo().dataDir+"/databases");
+        File db = new File(databases, connDB.DBNAME);
+        File db_shm = new File(databases, connDB.DBNAME+"-shm");
+        File db_wal = new File(databases, connDB.DBNAME+"-wal");
+
+        if(db.delete()) {
+            if (db_shm.exists() && db_wal.exists()) {
+                db_shm.delete();
+                db_wal.delete();
+            }
+            if (!this.getDatabasePath(connDB.DBNAME).exists()) {
+                Toast.makeText(this, "DB file deleted", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "unable to delete DB file", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void moveDB () throws IOException {
+        //   copying db from internal storage to app db location
+        String moveFrom = "/storage/emulated/0/"+connDB.DBNAME;
+        String moveTo = this.getDatabasePath(connDB.DBNAME).getPath();
+//        String moveTo = "/storage/emulated/0/BrainTrain/"+connDB.DBNAME;
+
+//        Files.copy
+        File src = new File(moveFrom);
+        File dest = new File(moveTo);
+
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(src);
+            os = new FileOutputStream(dest);
+            // buffer size 1K
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buf)) > 0) {
+                os.write(buf, 0, bytesRead);
+            }
+        } finally { is.close(); os.close(); }
+
+        if (!is.equals(null) && !os.equals(null) && this.getDatabasePath(connDB.DBNAME).exists()) {
+            Toast.makeText(this, "DB restored/moved successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Couldn't move db file", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void soutUsers() {
+
+        List<User> users = userDao.getAllUsers();
+        for (User u:users) {
+            String prn = "usersName: "+u.getUsername()+
+                    " fatherName: "+u.getFathers_first_name()+
+                    " motherName: +"+u.getMothers_maiden_name()+"\n";
+            System.out.println(prn);
+            Toast.makeText(this, prn, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void verifyStoragePermissions(Activity activity) {
+
+        final int REQUEST_EXTERNAL_STORAGE = 1;
+        String[] PERMISSIONS_STORAGE = {
+
+                //Manifest.permission.READ_EXTERNAL_STORAGE,f
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+
+        int permission = ActivityCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if(permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 }

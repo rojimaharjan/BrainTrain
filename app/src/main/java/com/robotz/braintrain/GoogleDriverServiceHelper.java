@@ -11,6 +11,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -59,24 +60,28 @@ class GoogleDriverServiceHelper {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Task<String> callDownload(String uploadedFiledId, String fileId) {
-//        String fileId = "11RIqrEladA8uwaSB_4rUz7bmU10EeVQm";
-//        fileName ID: 11RIqrEladA8uwaSB_4rUz7bmU10EeVQm
-        String filePath = "/storage/emulated/0/";
-        OutputStream outputStream = new ByteArrayOutputStream();
+    public Task<String> callDownload(String fileId, String filePath) throws FileNotFoundException, FileNotFoundException {
+//        String filePath = "/storage/emulated/0/adf.db";
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        Path file = Paths.get("the-file-name.txt");
+        java.io.File file = new java.io.File(filePath);
+
+        FileOutputStream fos = new FileOutputStream(file);
 
         return  Tasks.call(executor, () -> {
             try {
-                driveService.files().get(this.dbID)
+
+                driveService.files().get(fileId)
                         .executeMediaAndDownloadTo(outputStream);
-                /*Files.copy(Paths.get(filePath), outputStream);*/
-                System.out.println(outputStream.toString());
+                fos.write(outputStream.toByteArray());
+                fos.close();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return "hello";
+            return fileId;
         });
     }
 
