@@ -1,6 +1,9 @@
 package com.robotz.braintrain;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,12 +15,15 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -33,22 +39,29 @@ import com.robotz.braintrain.ViewModel.MedicationViewModel;
 
 import org.w3c.dom.Text;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 
 public class AddMedicationFragment extends Fragment implements UnitDialog.SingleChoiceListener {
-    public static final String EXTRA_MEDICATIONNAME = "com.robotz.braintrain.EXTRA_MEDICATIONNAME";
+/*    public static final String EXTRA_MEDICATIONNAME = "com.robotz.braintrain.EXTRA_MEDICATIONNAME";
     public static final String EXTRA_STARTDATE = "com.robotz.braintrain.EXTRA_STARTDATE";
     public static final String EXTRA_TYPE = "com.robotz.braintrain.EXTRA_TYPE";
     public static final String EXTRA_ASNEEDED = "com.robotz.braintrain.EXTRA_ASNEEDED";
     public static final String EXTRA_DURATION = "com.robotz.braintrain.EXTRA_DURATION";
     public static final String EXTRA_DURATIONTIME = "com.robotz.braintrain.EXTRA_DURATIONTIME";
     public static final String EXTRA_FREQUENCYTIME = "com.robotz.braintrain.EXTRA_FREQUENCYTIME";
-    public static final String EXTRA_FREQUENCY = "com.robotz.braintrain.EXTRA_FREQUENCY";
+    public static final String EXTRA_FREQUENCY = "com.robotz.braintrain.EXTRA_FREQUENCY";*/
 
     private saveMedicationData listener;
 
@@ -60,7 +73,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     MaterialCheckBox asneededCheckbox;
     MaterialButton savebtn;
     String medName;
-    TextView pills;
+    TextView pills, alarmTxtView;
     TextView duration;
     String durationTime;
     TextView frequency;
@@ -73,6 +86,13 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     private FrequencyDao frequencyDao;
     private DurationDao durationDao;
     public BrainTrainDatabase connDB;
+    List<Calendar> alarmList;
+
+    Calendar mcurrentTime, AT;
+
+    private AlarmManager alarmManager;
+    private static Intent alarmIntent;
+    private static PendingIntent pendingAlarmIntent;
 
 
     @Override
@@ -92,6 +112,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
         pills = view.findViewById(R.id.pills);
         duration = view.findViewById(R.id.DurationTxt);
         frequency = view.findViewById(R.id.FrequencyTxt);
+        alarmTxtView = view.findViewById(R.id.alarm);
 
         sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
         asneededCheckbox = (MaterialCheckBox) view.findViewById(R.id.asneeded);
@@ -130,14 +151,37 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
             frequencyTime = ("n/a");
         }
 
+        alarmTxtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        AT = Calendar.getInstance();
+                        AT.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        AT.set(Calendar.MINUTE, selectedMinute);
+                        AT.set(Calendar.SECOND, 0);
+                        //display alarm below
+                        AddAlarm(AT);
+                        setAlarm(AT);
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
+        });
         medicationName.setText(MN);
 
         savebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String medN = medicationName.getText().toString();
-                SimpleDateFormat d = new SimpleDateFormat("ddMMyyyy");
                 Date sDate = null;
+                SimpleDateFormat d = new SimpleDateFormat("ddMMyyyy");
                 try {
                     sDate = d.parse(sD);
                 } catch (ParseException e) {
@@ -158,25 +202,11 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                     Duration duration = new Duration((int) id, sDate, dur, durT);
                     durationDao.insert(duration);
                     Frequency frequency = new Frequency((int) id, fre, freT);
-                    durationDao.insert(duration);
+                    frequencyDao.insert(frequency);
                 }
                 Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
 
                 ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "", false);
-                /*Medication medication = new Medication(1, medName, type, aN);
-                AsyncTask<Medication, Void, Long> id = medicationViewModel.insert(medication);
-                Toast.makeText(getContext(), "id"+ id, Toast.LENGTH_SHORT).show();*/
-                /*Intent data = new Intent();
-                data.putExtra(EXTRA_MEDICATIONNAME, medN);
-                data.putExtra(EXTRA_ASNEEDED, aN);
-                data.putExtra(EXTRA_STARTDATE, sDate);
-                data.putExtra(EXTRA_TYPE, type);
-                data.putExtra(EXTRA_DURATION, dur);
-                data.putExtra(EXTRA_DURATIONTIME, durT);
-                data.putExtra(EXTRA_FREQUENCY, fre);
-                data.putExtra(EXTRA_FREQUENCYTIME, freT);
-                getActivity().setResult(Activity.RESULT_OK, data);
-                getActivity().finish();*/
 
 
             }
@@ -226,6 +256,47 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
 
         return view;
     }
+
+    private void AddAlarm(Calendar AT) {
+        TextView alarmText;
+        View alarm = LayoutInflater.from(getActivity()).inflate(R.layout.alarm, null);
+        alarmText =  alarm.findViewById(R.id.alarmTime);
+//        alarmText.setText(HourFormatted+":"+MinuteFormatted);
+        String t = DateFormat.getTimeInstance(DateFormat.SHORT).format(AT.getTime());
+        alarmText.setText(t);
+        reminderLL.addView(alarm);
+        alarm.findViewById(R.id.deleteBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reminderLL.removeView(v);
+                String s = v.toString();
+                cancelAlarm();
+            }
+        });
+
+    }
+
+    private void setAlarm(Calendar at) {
+
+        alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, at.getTimeInMillis(), pendingIntent);
+
+    }
+
+    private void cancelAlarm(){
+        alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+
+
+    }
+
+
   /*  @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

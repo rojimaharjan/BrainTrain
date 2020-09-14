@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -41,6 +42,11 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.robotz.braintrain.Dao.MedicationDao;
 import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
@@ -75,13 +81,15 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
     private BrainTrainDatabase connDB;
     private String uploadedFileID;
     private UserDao userDao;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
 
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
-        if(sharedPreferences.getBoolean("rememberme", true)) {
+        if(sharedPreferences.getBoolean("RememberMe", false)!= false) {
             currentUser = sharedPreferences.getString("currentUser", "");
             savedInstanceState.putString("userInfo", currentUser);
 //            Toast.makeText(this, "instance saved", Toast.LENGTH_SHORT).show();
@@ -96,9 +104,27 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         verifyStoragePermissions(this);
         requestSignIn();
 
+
+     /*   // Read from the database
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                String value = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });*/
+
         sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
 //        boolean isNull = (sharedPreferences.getBoolean("rememeberme", ));
-        if(sharedPreferences.getBoolean("rememeberme", false)!= false) {
+        if(sharedPreferences.getBoolean("RememberMe", false) != false) {
             currentUser = sharedPreferences.getString("currentUser", "");
 //            savedInstanceState.putString("userInfo", currentUser);
         }
@@ -177,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
             case (R.id.logout):
                 navigateTo(new LoginFragment(), "", false);
                 sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
-                if (sharedPreferences.getBoolean("RememberMe", false)) {
+                if (sharedPreferences.getBoolean("RememberMe", false)!= true) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.clear();
                     editor.apply();
@@ -318,11 +344,17 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
     public void backupDB(View view) {
         userDao.checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
+        currentUser = sharedPreferences.getString("currentUser", "");
+
+
 
         googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
-                uploadedFileID = s;
+                myRef = database.getReference("users").child(currentUser).getRef();
+                DatabaseReference googleFileUploadedId = myRef.child("googleFileUploadedId");
+                googleFileUploadedId.setValue(s);
+
                 Toast.makeText(getApplicationContext(), connDB.DBNAME+" is uploaded successfully", Toast.LENGTH_LONG).show();
             }
         })
@@ -336,17 +368,34 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void downloadDB(View view) throws FileNotFoundException {
+    public void downloadDB(String userName) throws FileNotFoundException {
+
 //        String fileId = "11RIqrEladA8uwaSB_4rUz7bmU10EeVQmdd";
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
         restoreDBCheck();
 
-        googleDriverServiceHelper.callDownload(uploadedFileID, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
+        myRef = database.getReference("users").child(userName).getRef();
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                uploadedFiledId = snapshot.child("googleFileUploadedId").getValue().toString();
+                System.out.println(uploadedFiledId + "file recently uploaded");
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        googleDriverServiceHelper.callDownload(uploadedFiledId, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
                 System.out.println(s);
                 soutUsers();
-                Toast.makeText(getApplicationContext(), uploadedFileID+" is downloaded successfully", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), uploadedFiledId+" is downloaded successfully", Toast.LENGTH_LONG).show();
             }
         })
                 .addOnFailureListener(new OnFailureListener() {

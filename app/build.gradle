@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -90,5 +91,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-drive:17.0.0' //google drive
 
     implementation 'com.google.android.gms:play-services-location:17.0.0' //google Location and activity recognition
+
+    //dependency for the firebase SDK for google Analytics
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    // firebase realtime databse SDK
+    implementation 'com.google.firebase:firebase-database:19.4.0'
 
 }

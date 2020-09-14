@@ -149,6 +149,7 @@
                     android:text="Add Reminder"
                     android:drawablePadding="20dp"
                     android:gravity="center_vertical"
+
                     />
 
                 <View

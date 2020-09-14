@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Dao.UserInfoDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
@@ -13,6 +15,9 @@ import com.robotz.braintrain.Entity.User;
 import com.robotz.braintrain.Entity.UserInfo;
 import com.robotz.braintrain.ViewModel.UserInfoViewModel;
 import com.robotz.braintrain.ViewModel.UserViewModel;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.text.TextUtils.concat;
 
@@ -34,6 +39,9 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     Long idForUser;
     GoogleDriverServiceHelper googleDriverServiceHelper;
     private BrainTrainDatabase connDB;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("users");
+    DatabaseReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,7 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         userInfoDao = Room.databaseBuilder(this, BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().userInfoDao();*/
         userDao = connDB.userDao();
         userInfoDao = connDB.userInfoDao();
+
 
     }
 
@@ -74,16 +83,22 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     public void dob(CharSequence dob) {
         DateOfBirth = dob;
         CharSequence username = createUsername();
-        User user = new User(FathersFirstName.toString(), MothersMaidenName.toString(), username.toString());
-        idForUser = userDao.insert(user);
+        User user = new User(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(),  username.toString());
+        idForUser = userDao.insert(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(),  username.toString());
         /*SuccessFragment frag = new SuccessFragment();
         frag.getUsername(username.toString());*/
         Toast.makeText(this, ""+FathersFirstName+ "  "+ MothersMaidenName +" "+ idForUser , Toast.LENGTH_LONG).show();
 
+        userRef = myRef.child(username.toString());
+        Map<String, User> userMap = new HashMap<>();
+        userMap.put("users", user);
+        userRef.setValue(userMap);
+
 
         SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("app", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("Username", username.toString());
+        editor.putString("currentUser", username.toString());
+
         editor.apply();
 
     }
@@ -97,6 +112,11 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         UserInfo userInfo = new UserInfo(idForUser.intValue(), Diagnosis.toString());
         userInfoDao.insert(userInfo);
         connDB.close();
+
+        DatabaseReference userInfoRef = userRef.child("userInfo");
+        Map<String, String> userInfoMap = new HashMap<>();
+        userInfoMap.put("diagnosis", Diagnosis.toString());
+        userInfoRef.setValue(userInfoMap);
 
     }
 

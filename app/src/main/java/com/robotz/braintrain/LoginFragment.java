@@ -1,19 +1,25 @@
 package com.robotz.braintrain;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -29,6 +35,7 @@ import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
 import com.robotz.braintrain.Entity.User;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -41,6 +48,7 @@ public class LoginFragment extends Fragment {
     TextInputEditText passwordEditText;
     Boolean rememberMe = false;
     private BrainTrainDatabase connDB;
+    private String backUpUserName;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,9 +65,9 @@ public class LoginFragment extends Fragment {
         signupButton = view.findViewById(R.id.signUp_button);
         remember = view.findViewById(R.id.rememberme);
         final SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
-        if (sharedPreferences.getString("Username", null) != null) {
-            String username =""+sharedPreferences.getString("Username", "");
-            passwordEditText.setText(username);
+        if (sharedPreferences.getString("currentUser", null) != null) {
+            String currentUser =""+sharedPreferences.getString("currentUser", "");
+            passwordEditText.setText(currentUser);
         }
 
         remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -70,11 +78,20 @@ public class LoginFragment extends Fragment {
         });
 
         downloadButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 /*((MainActivity)getActivity()).verifyStoragePermissions(getActivity());
                 ((MainActivity)getActivity()).requestSignIn();*/
-                System.out.println("empty function");
+//                getUserName();
+                backUpUserName = passwordEditText.getText().toString();
+                if(backUpUserName != null) {
+                    try {
+                        ((MainActivity) getActivity()).downloadDB(backUpUserName);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
 
             }
         });
@@ -113,6 +130,33 @@ public class LoginFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void getUserName() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Username");
+
+// Set up the input
+        final EditText input = new EditText(getContext());
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                backUpUserName = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void SaveInSharedPreference(boolean isChecked) {

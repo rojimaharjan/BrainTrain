@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/alarmLayout">
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/deleteBtn"
+        android:src="@drawable/shr_close_menu"
+        android:tint="@android:color/holo_red_light"
+        android:backgroundTint="@android:color/white"
+        android:clickable="true"/>
+    <TextView
+        android:id="@+id/alarmTime"
+        android:layout_toEndOf="@+id/deleteBtn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/TextAppearance.Shrine.Body"
+        android:clickable="true"
+        />
+
+</RelativeLayout>

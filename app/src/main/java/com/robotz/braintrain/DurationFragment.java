@@ -28,8 +28,10 @@ import android.widget.Toolbar;
 import com.google.android.material.picker.MaterialDatePickerDialogFragment;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -72,6 +74,10 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
         radiodurationbtn = view.findViewById(R.id.radioduration);
         durationExtraL = view.findViewById(R.id.durationExtra);
         startdate = view.findViewById(R.id.StartDateTxt);
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "dd/MM/yyyy", Locale.getDefault());
+        startdate.setText(dateFormat.format(date).toString());
 
         startdate.setOnClickListener(new View.OnClickListener() {
             @Override

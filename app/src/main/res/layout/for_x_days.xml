@@ -18,7 +18,7 @@
         android:id="@+id/daysTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="10"
+        android:text="1"
         style="@style/TextAppearance.Shrine.TextInputLayout.HintText"
         android:layout_marginBottom="5dp"
         />

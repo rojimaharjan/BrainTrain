@@ -16,8 +16,8 @@ import java.util.List;
 @Dao
 public interface UserDao {
 
-    @Insert
-    Long insert(User user);
+    @Query("INSERT INTO user_table (fathers_first_name, mothers_maiden_name, date_of_birth, username) VALUES(:fathers_first_name, :mothers_maiden_name, :date_of_birth, :username)")
+    long insert(String fathers_first_name, String mothers_maiden_name, String date_of_birth, String username);
 
     @Update
     void update(User user);

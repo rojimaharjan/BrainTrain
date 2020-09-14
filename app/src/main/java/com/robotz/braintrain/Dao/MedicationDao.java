@@ -30,7 +30,7 @@ public interface MedicationDao {
     @Query("DELETE FROM medication_table")
     void deleteAllMedications();
 
-    @Query("SELECT * FROM medication_table")
+    @Query("SELECT * FROM medication_table WHERE `delete` = 'false'")
     List<Medication> getAllMedications();
 
 }

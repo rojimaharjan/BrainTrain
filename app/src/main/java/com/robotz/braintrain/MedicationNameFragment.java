@@ -37,16 +37,18 @@ public class MedicationNameFragment extends Fragment {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(MedicationName.toString() != null) {
+                String medName = MedicationName.getText().toString();
+                if(medName.isEmpty()) {
 //                    MedicationName = view.findViewById(R.id.MedicationNameTxt);
+                    medicationLayout.setError(getString(R.string.error_medicationname));
+
+                }else{
                     AddMedicationFragment amf = new AddMedicationFragment();
                     Bundle args = new Bundle();
                     args.putString("MedName", MedicationName.getText().toString());
                     amf.setArguments(args);
 //                    Listener.medName(MedicationName.toString());
                     ((NavigationHost) getActivity()).navigateTo(amf, "Add Medication", false);
-                }else{
-                    medicationLayout.setError(getString(R.string.error_medicationname));
 
                 }
             }
