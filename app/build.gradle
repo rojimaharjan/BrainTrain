@@ -47,6 +47,8 @@ dependencies {
     def room_version = "2.2.5"
     //ViewModel and LiveData
 
+
+
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     // LiveData

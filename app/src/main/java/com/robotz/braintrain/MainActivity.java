@@ -18,6 +18,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,12 +78,12 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
     private MedicationDao medicationDao;
 
 //    gdrive api
-    public String uploadedFiledId;
+//    public String uploadedFiledId;
     GoogleDriverServiceHelper googleDriverServiceHelper;
     private BrainTrainDatabase connDB;
     private String uploadedFileID;
     private UserDao userDao;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
 
 
@@ -103,24 +105,6 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         setContentView(R.layout.activity_main);
         verifyStoragePermissions(this);
         requestSignIn();
-
-
-     /*   // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });*/
 
         sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
 //        boolean isNull = (sharedPreferences.getBoolean("rememeberme", ));
@@ -244,9 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         ((UntilDateFragment) untildate).setDateValue(date);
     }*/
 
-
-
-
 /*    @Override
     public void setDayValue(int day) {
         forXDaysFragment.ChangeDayValue(day);
@@ -346,8 +327,10 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
         currentUser = sharedPreferences.getString("currentUser", "");
 
-
-
+        if(!isConnected()){
+            Toast.makeText(this, "Please connect to the internet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         googleDriverServiceHelper.callUploader(filePath).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
@@ -372,38 +355,45 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
 
 //        String fileId = "11RIqrEladA8uwaSB_4rUz7bmU10EeVQmdd";
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
-        restoreDBCheck();
+        System.out.println("user is: "+userName);
 
-        myRef = database.getReference("users").child(userName).getRef();
+        DatabaseReference ref = database.getReference("users").child(userName).getRef();
 
-        myRef.addValueEventListener(new ValueEventListener() {
+    // Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                uploadedFiledId = snapshot.child("googleFileUploadedId").getValue().toString();
-                System.out.println(uploadedFiledId + "file recently uploaded");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                uploadedFileID = dataSnapshot.child("googleFileUploadedId").getValue().toString();
+                System.out.println(uploadedFileID);
 
+                restoreDBCheck();
+                try {
+                    googleDriverServiceHelper.callDownload(uploadedFileID, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            System.out.println(s);
+                            soutUsers();
+                            Toast.makeText(getApplicationContext(), uploadedFileID+" is downloaded successfully", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), uploadedFileID+" please check your ID or gd api key", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
 
-        googleDriverServiceHelper.callDownload(uploadedFiledId, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                System.out.println(s);
-                soutUsers();
-                Toast.makeText(getApplicationContext(), uploadedFiledId+" is downloaded successfully", Toast.LENGTH_LONG).show();
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), uploadedFileID+" please check your ID or gd api key", Toast.LENGTH_LONG).show();
-                    }
-                });
+
 
 
     }
@@ -417,14 +407,16 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         File db_shm = new File(databases, connDB.DBNAME+"-shm");
         File db_wal = new File(databases, connDB.DBNAME+"-wal");
 
-        if(db.delete()) {
-            if (db_shm.exists() && db_wal.exists()) {
-                db_shm.delete();
-                db_wal.delete();
-            }
-            if (!this.getDatabasePath(connDB.DBNAME).exists()) {
-                Toast.makeText(this, "DB file deleted", Toast.LENGTH_SHORT).show();
-            }
+        if(db.exists()) {
+            if(db.delete()) {
+                if (db_shm.exists() && db_wal.exists()) {
+                    db_shm.delete();
+                    db_wal.delete();
+                }
+                if (!this.getDatabasePath(connDB.DBNAME).exists()) {
+    //                Toast.makeText(this, "DB file deleted", Toast.LENGTH_SHORT).show();
+                }
+        }
         } else {
             Toast.makeText(this, "unable to delete DB file", Toast.LENGTH_SHORT).show();
         }
@@ -494,6 +486,13 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+    }
+
+    public boolean isConnected(){
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
     }
 }
 

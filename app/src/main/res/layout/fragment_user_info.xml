@@ -110,7 +110,7 @@
             android:layout_height="1.5dp"
             android:background="?android:attr/listDivider" />
 
-        <com.google.android.material.button.MaterialButton
+      <!--  <com.google.android.material.button.MaterialButton
             android:id="@+id/download_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
             app:iconTintMode="multiply"
             android:onClick="downloadDB"
             tools:ignore="OnClick"
-            android:text="Download"/>
+            android:text="Download"/>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

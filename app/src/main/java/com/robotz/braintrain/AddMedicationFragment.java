@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -28,13 +29,17 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.robotz.braintrain.Dao.DurationDao;
 import com.robotz.braintrain.Dao.FrequencyDao;
 import com.robotz.braintrain.Dao.MedicationDao;
+import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
 import com.robotz.braintrain.Entity.Duration;
 import com.robotz.braintrain.Entity.Frequency;
 import com.robotz.braintrain.Entity.Medication;
+import com.robotz.braintrain.Entity.User;
 import com.robotz.braintrain.ViewModel.MedicationViewModel;
 
 import org.w3c.dom.Text;
@@ -46,7 +51,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -87,13 +94,17 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     private DurationDao durationDao;
     public BrainTrainDatabase connDB;
     List<Calendar> alarmList;
+    private String currentUser;
 
     Calendar mcurrentTime, AT;
 
     private AlarmManager alarmManager;
     private static Intent alarmIntent;
     private static PendingIntent pendingAlarmIntent;
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("users");
+    DatabaseReference medicationRef;
+    private UserDao userDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,6 +129,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
         asneededCheckbox = (MaterialCheckBox) view.findViewById(R.id.asneeded);
         savebtn = view.findViewById(R.id.save_button);
         String MN = getArguments().getString("MedName");
+        currentUser = sharedPreferences.getString("currentUser", "");
         final String sD = sharedPreferences.getString("StartDate", "");
         final String d = sharedPreferences.getString("Duration", "");
         final String dt = sharedPreferences.getString("SubDuration", "");
@@ -180,13 +192,13 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
             @Override
             public void onClick(View view) {
                 String medN = medicationName.getText().toString();
-                Date sDate = null;
-                SimpleDateFormat d = new SimpleDateFormat("ddMMyyyy");
+                String sDate = sD;
+                /*SimpleDateFormat d = new SimpleDateFormat("ddMMyyyy");
                 try {
                     sDate = d.parse(sD);
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }
+                }*/
                 boolean aN = asNeeded;
                 String type = pills.getText().toString();
                 String dur = duration.getText().toString();
@@ -196,15 +208,41 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
 
 //                listener.getMedicationData(medN, type, aN);
 
-//                Medication medication = new Medication(1, medN, type, asNeeded);
+
+                userDao = connDB.userDao();
+                User user = userDao.currentuserid(currentUser);
+                Medication medication = new Medication(user.getUserId(), medN, type, asNeeded);
+
+                DatabaseReference medicationRef = myRef.child(currentUser);
+                Map<String, Medication> medicationMap = new HashMap<>();
+                medicationMap.put("medication", medication);
+                medicationRef.setValue(medicationMap);
+
+
                 long id = medicationDao.insert(1, medN, type, asNeeded);
                 if(!aN){
-                    Duration duration = new Duration((int) id, sDate, dur, durT);
-                    durationDao.insert(duration);
+                    /*Duration duration = new Duration((int) id, sDate, dur, durT);
+                    durationDao.insert(duration);*/
+                    DatabaseReference durationRef = medicationRef.child("medication");
+                    Map<String, String> durationMap = new HashMap<>();
+                    durationMap.put("duration", Integer.toString((int) id));
+                    durationMap.put("duration", sDate);
+                    durationMap.put("duration", dur);
+                    durationMap.put("duration", durT);
+                    durationRef.setValue(durationMap);
+
+
                     Frequency frequency = new Frequency((int) id, fre, freT);
+                    DatabaseReference frequencyRef = medicationRef.child("medication");
+                    Map<String, String> frequencyMap = new HashMap<>();
                     frequencyDao.insert(frequency);
+                    frequencyMap.put("frequency", Integer.toString((int) id));
+                    frequencyMap.put("frequency", fre);
+                    frequencyMap.put("frequency", freT);
+                    frequencyRef.setValue(frequencyMap);
                 }
-                Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
+
+//                Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
 
                 ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "", false);
 

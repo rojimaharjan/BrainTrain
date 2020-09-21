@@ -68,7 +68,7 @@ public class SignUpDOBFragment extends Fragment {
         boolean date;
         if(text != null && text.length() >= 4){
             dob = Integer.parseInt(text);
-            if(dob >= 1920){
+            if(dob >= 1920 || dob <= 2002){
                 return true;
             }
         }

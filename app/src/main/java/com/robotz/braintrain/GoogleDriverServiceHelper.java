@@ -74,6 +74,7 @@ class GoogleDriverServiceHelper {
 
                 driveService.files().get(fileId)
                         .executeMediaAndDownloadTo(outputStream);
+                System.out.println(driveService);
                 fos.write(outputStream.toByteArray());
                 fos.close();
 

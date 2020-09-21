@@ -28,6 +28,8 @@ public interface UserDao {
     @Query("DELETE FROM user_table")
     void deleteAllUsers();
 
+    @Query("SELECT * FROM user_table where username = :username")
+    User currentuserid(String username);
 
     @Query("SELECT * FROM user_table")
     List<User> getAllUsers();

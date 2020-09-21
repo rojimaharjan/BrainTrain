@@ -34,8 +34,8 @@ public class SuccessFragment extends Fragment {
         yourUsername = view.findViewById(R.id.usernameOutput);
         gotoSignin = view.findViewById(R.id.goToSignIn_button);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
-        if (sharedPreferences.getString("Username", null) != null) {
-            String username =""+sharedPreferences.getString("Username", "");
+        if (sharedPreferences.getString("currentUser", null) != null) {
+            String username =""+sharedPreferences.getString("currentUser", "");
             yourUsername.setText(username);
         }
 
@@ -45,8 +45,9 @@ public class SuccessFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
-//                transaction.addToBackStack(null)
+//                this.addToBackStack(null);
                 startActivity(intent);
+
 //                ((NavigationHost) getActivity()).navigateTo(new LoginFragment(),"",  false);
             }
         });
@@ -56,17 +57,5 @@ public class SuccessFragment extends Fragment {
 
 
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-//
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-//    }
 
     }

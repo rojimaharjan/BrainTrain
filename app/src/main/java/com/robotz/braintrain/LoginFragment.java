@@ -1,9 +1,12 @@
 package com.robotz.braintrain;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -84,14 +87,25 @@ public class LoginFragment extends Fragment {
                 /*((MainActivity)getActivity()).verifyStoragePermissions(getActivity());
                 ((MainActivity)getActivity()).requestSignIn();*/
 //                getUserName();
-                backUpUserName = passwordEditText.getText().toString();
-                if(backUpUserName != null) {
-                    try {
-                        ((MainActivity) getActivity()).downloadDB(backUpUserName);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                if(isConnected()){
+                    backUpUserName = passwordEditText.getText().toString();
+                    if (!backUpUserName.isEmpty()) {
+                        try {
+                            ((MainActivity) getActivity()).downloadDB(backUpUserName);
+
+                            getActivity().finish();
+                            startActivity(getActivity().getIntent());
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Please fill username for restoring database. ", Toast.LENGTH_SHORT).show();
+                        passwordTextInput.setError(null); // Clear the error
                     }
+                }else{
+                    Toast.makeText(getContext(), "Please connect to the internet.", Toast.LENGTH_SHORT).show();
                 }
+
 
             }
         });
@@ -113,8 +127,12 @@ public class LoginFragment extends Fragment {
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), signup.class);
-                startActivity(intent);
+                if(isConnected()) {
+                    Intent intent = new Intent(getActivity(), signup.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getContext(), "Please connect to the internet.", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -192,5 +210,11 @@ public class LoginFragment extends Fragment {
         return isValid;
     }
 
+    public boolean isConnected(){
+        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
 
 }

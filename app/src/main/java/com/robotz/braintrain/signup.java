@@ -1,9 +1,21 @@
 package com.robotz.braintrain;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +39,7 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     public static final String EXTRA_DOB ="com.robotz.braintrain.EXTRA_DOB";
     public static final String EXTRA_DIAGNOSIS ="com.robotz.braintrain.EXTRA_DIAGNOSIS";*/
 
+    private ActionBar mActionBar;
     private UserDao userDao;
     private UserViewModel userViewModel;
     private UserInfoViewModel userInfoViewModel;
@@ -49,6 +62,8 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         /*verifyStoragePermissions(this);
         requestSignIn();*/
         setContentView(R.layout.activity_signup);
+        setUpToolbar();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -65,10 +80,6 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
 
     }
 
-
-
-
-
     @Override
     public void fathersFN(CharSequence fathersFN) {
         FathersFirstName = fathersFN;
@@ -83,11 +94,14 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     public void dob(CharSequence dob) {
         DateOfBirth = dob;
         CharSequence username = createUsername();
-        User user = new User(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(),  username.toString());
-        idForUser = userDao.insert(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(),  username.toString());
+        connDB.clearAllTables();
+
+        User user = new User(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(), username.toString());
+        idForUser = userDao.insert(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(), username.toString());
         /*SuccessFragment frag = new SuccessFragment();
         frag.getUsername(username.toString());*/
-        Toast.makeText(this, ""+FathersFirstName+ "  "+ MothersMaidenName +" "+ idForUser , Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "" + FathersFirstName + "  " + MothersMaidenName + " " + idForUser, Toast.LENGTH_LONG).show();
+
 
         userRef = myRef.child(username.toString());
         Map<String, User> userMap = new HashMap<>();
@@ -122,21 +136,55 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
 
     private void SaveUser() {
 //        CharSequence username = createUsername();
-        CharSequence fn = FathersFirstName.subSequence(0,3);
-        CharSequence mn = MothersMaidenName.subSequence((MothersMaidenName.length()-3),3);
+        CharSequence fn = FathersFirstName.subSequence(0, 3);
+        CharSequence mn = MothersMaidenName.subSequence((MothersMaidenName.length() - 3), 3);
         CharSequence username = concat(fn, mn, DateOfBirth);
-
-        Toast.makeText(this, ""+username+ "  "+ Diagnosis, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "" + username + "  " + Diagnosis, Toast.LENGTH_LONG).show();
 
     }
 
     private CharSequence createUsername() {
-        CharSequence fn = FathersFirstName.subSequence(0,3);
-        CharSequence mn = MothersMaidenName.subSequence(0,3);
+        CharSequence fn = FathersFirstName.subSequence(0, 3);
+        CharSequence mn = MothersMaidenName.subSequence(0, 3);
         CharSequence username = concat(fn, mn, DateOfBirth);
         return username;
     }
 
+    public void setUpToolbar() {
+        Toolbar toolbar = this.findViewById(R.id.app_bar);
+        AppCompatActivity activity = (AppCompatActivity) signup.this;
+        if (activity != null) {
+            activity.setSupportActionBar(toolbar);
+        }
 
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                Intent intent = new Intent(signup.this, MainActivity.class);
+                                startActivity(intent);
+//                                Toast.makeText(activity, "here in toolbar", Toast.LENGTH_SHORT).show();
+
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(signup.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                builder.setMessage("Do you want to exit?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+//                Toast.makeText(activity, "here in toolbar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 }
