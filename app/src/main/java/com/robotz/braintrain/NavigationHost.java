@@ -9,4 +9,5 @@ public interface NavigationHost {
     void navigateTo(Fragment fragment, String title, boolean addToBackstack);
 
     void setUpToolbar(View view);
+    void setUpBackBtn(View view);
 }

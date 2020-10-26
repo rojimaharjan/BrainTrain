@@ -16,7 +16,7 @@ public class Duration {
             childColumns = "medicationId",
             onDelete = ForeignKey.CASCADE)
     private int medicationId;
-    private Date start_date;
+    private String start_date;
     private String duration_type;
     private String duration_time;
 
@@ -28,7 +28,7 @@ public class Duration {
         this.id = id;
     }
 
-    public Duration(int medicationId, Date start_date, String duration_type, String duration_time) {
+    public Duration(int medicationId, String start_date, String duration_type, String duration_time) {
         this.medicationId = medicationId;
         this.start_date = start_date;
         this.duration_type = duration_type;
@@ -40,7 +40,7 @@ public class Duration {
         return medicationId;
     }
 
-    public Date getStart_date() {
+    public String getStart_date() {
         return start_date;
     }
 

@@ -24,6 +24,9 @@ public interface MedicationDao {
     @Update
     void update(Medication medication);
 
+    @Query("UPDATE medication_table SET `delete` = :delete WHERE id = :id")
+    void updateDelete(boolean delete, int id);
+
     @Delete
     void delete(Medication medication);
 
@@ -32,5 +35,9 @@ public interface MedicationDao {
 
     @Query("SELECT * FROM medication_table WHERE `delete` = 'false'")
     List<Medication> getAllMedications();
+
+    @Query("SELECT * FROM medication_table WHERE id = :id")
+    Medication getMedication(int id);
+
 
 }

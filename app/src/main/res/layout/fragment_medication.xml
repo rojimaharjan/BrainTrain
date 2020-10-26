@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -48,13 +48,21 @@
         android:id="@+id/mainlayout"
         >
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/no_medication"
+            style="@style/TextAppearance.Shrine.SubTitle"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_medicationName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
 
-        <com.google.android.material.button.MaterialButton
+
+
+       <!-- <com.google.android.material.button.MaterialButton
             android:id="@+id/AddMedication"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,8 +73,21 @@
             app:icon="@drawable/icons8_plus_40"
             app:iconTintMode="multiply"
             style="@style/Widget.Shrine.Button"
-            android:layout_below="@+id/recycler_view_medicationName"/>
+            android:layout_below="@+id/recycler_view_medicationName"/>-->
 
     </RelativeLayout>
 
-</FrameLayout>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/AddMedication"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:icon="@android:drawable/ic_input_add"
+        app:iconTint="@android:color/white"
+        app:rippleColor="@android:color/white"
+        android:textColor="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_gravity="bottom|right"
+        android:text="ADD" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

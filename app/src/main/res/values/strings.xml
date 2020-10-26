@@ -61,5 +61,6 @@
     <string name="rememberme">Remember me</string>
     <string name="error_username">Username incorrect!!</string>
     <string name="error_medicationname">Enter medicaiton name.</string>
+    <string name="TermsCondition">Terms and Conditions</string>
 
 </resources>

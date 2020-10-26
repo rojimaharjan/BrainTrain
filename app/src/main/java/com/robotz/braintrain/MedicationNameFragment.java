@@ -46,6 +46,7 @@ public class MedicationNameFragment extends Fragment {
                     AddMedicationFragment amf = new AddMedicationFragment();
                     Bundle args = new Bundle();
                     args.putString("MedName", MedicationName.getText().toString());
+                    args.putString("edit", "false");
                     amf.setArguments(args);
 //                    Listener.medName(MedicationName.toString());
                     ((NavigationHost) getActivity()).navigateTo(amf, "Add Medication", false);

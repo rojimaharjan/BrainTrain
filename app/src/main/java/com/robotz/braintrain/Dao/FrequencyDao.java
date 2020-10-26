@@ -28,4 +28,7 @@ public interface FrequencyDao {
 
     @Query("SELECT * FROM frequency_table WHERE id = 'id'")
     LiveData<List<Frequency>> getAllFrequencies();
+
+    @Query("SELECT * FROM frequency_table WHERE id = :medicationId")
+    Frequency getFrequency(int medicationId);
 }

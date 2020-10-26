@@ -5,8 +5,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
-
 @Entity(tableName = "score_table")
 public class Score {
     @PrimaryKey(autoGenerate = true)
@@ -21,27 +19,24 @@ public class Score {
     private String total_score;
     private String total_time_taken;
     private String error;
-    private String game_level;
-
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    private Date played_date;
+    private String played_date;
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setPlayed_date(Date played_date) {
+    /*public void setPlayed_date(Long played_date) {
         this.played_date = played_date;
-    }
+    }*/
 
 
-    public Score(int userId, String game_name, String total_score, String total_time_taken, String error, String game_level) {
+    public Score(int userId, String game_name, String total_score, String total_time_taken, String error, String played_date) {
         this.userId = userId;
         this.game_name = game_name;
         this.total_score = total_score;
         this.total_time_taken = total_time_taken;
         this.error = error;
-        this.game_level = game_level;
+        this.played_date = played_date;
     }
 
     public int getId() {
@@ -68,11 +63,11 @@ public class Score {
         return error;
     }
 
-    public String getGame_level() {
-        return game_level;
-    }
-
-    public Date getPlayed_date() {
+    public String getPlayed_date() {
         return played_date;
     }
+
+   /* public Long getPlayed_date() {
+        return played_date;
+    }*/
 }

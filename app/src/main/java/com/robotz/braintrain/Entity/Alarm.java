@@ -18,6 +18,7 @@ public class Alarm {
             childColumns = "medicationId",
             onDelete = ForeignKey.NO_ACTION)
     private int medicationId;
+    private int alarmId;
     private int alarm_time_hour;
     private int alarm_time_minute;
 
@@ -36,8 +37,9 @@ public class Alarm {
         this.deleted = deleted;
     }
 
-    public Alarm(int medicationId, int alarm_time_hour, int alarm_time_minute) {
+    public Alarm(int medicationId,int alarmId, int alarm_time_hour, int alarm_time_minute) {
         this.medicationId = medicationId;
+        this.alarmId = alarmId;
         this.alarm_time_hour = alarm_time_hour;
         this.alarm_time_minute = alarm_time_minute;
     }
@@ -51,6 +53,10 @@ public class Alarm {
     }
     public int getAlarm_time_minute() {
         return alarm_time_minute;
+    }
+
+    public int getAlarmId() {
+        return alarmId;
     }
 
     public Boolean getDeleted() {

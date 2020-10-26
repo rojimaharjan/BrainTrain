@@ -50,7 +50,7 @@ public class ScoreRepository {
         }
         @Override
         protected Void doInBackground(Score... scores) {
-            scoreDao.insert(scores[0]);
+//            scoreDao.insert(scores[0]);
             return null;
         }
     }

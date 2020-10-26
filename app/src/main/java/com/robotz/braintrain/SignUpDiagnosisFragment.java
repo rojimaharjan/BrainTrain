@@ -84,7 +84,7 @@ public class SignUpDiagnosisFragment extends Fragment {
                 SuccessFragment successfrag = new SuccessFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.signupContainer, successfrag)
-                        .addToBackStack(null)
+                        .addToBackStack("false")
                         .commit();
             }
         });

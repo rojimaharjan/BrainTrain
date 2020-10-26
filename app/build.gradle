@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+// Apply the Crashlytics Gradle plugin
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 30
@@ -20,7 +22,12 @@ android {
 //                arguments = ["room.schemaLocation": "E:/Masters/Game/BrainTrain/app/schemas".toString()]
             }
         }
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a"
+        }
     }
+
+
 
     buildTypes {
         release {
@@ -43,11 +50,12 @@ android {
 
 dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.work:work-runtime:2.4.0'
     def lifecycle_version = "2.2.0"
     def room_version = "2.2.5"
     //ViewModel and LiveData
 
-
+    implementation project(":CTG-debug")
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
@@ -98,5 +106,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
     // firebase realtime databse SDK
     implementation 'com.google.firebase:firebase-database:19.4.0'
+
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.6.0'
 
 }

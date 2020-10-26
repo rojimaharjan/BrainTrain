@@ -27,4 +27,7 @@ public interface DurationDao {
 
     @Query("SELECT * FROM duration_table WHERE id = 'id'")
     LiveData<List<Duration>> getAllDurations();
+
+    @Query("SELECT * FROM duration_table WHERE medicationId = :medicationId")
+    Duration getDuration(int medicationId);
 }

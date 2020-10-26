@@ -1,2 +1,12 @@
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
+include ':CTG-debug'
 include ':app'
 rootProject.name = "BrainTrain"

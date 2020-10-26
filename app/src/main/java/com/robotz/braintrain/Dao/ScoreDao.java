@@ -15,8 +15,8 @@ import java.util.List;
 @Dao
 public interface ScoreDao {
 
-    @Insert
-    void insert(Score score);
+ /*   @Insert
+    void insert(Score score);*/
 
     @Update
     void update(Score score);
@@ -29,4 +29,8 @@ public interface ScoreDao {
 
     @Query("SELECT * FROM score_table WHERE id = 'id'")
     LiveData<List<Score>> getAllScores();
+
+    @Query("INSERT INTO score_table (userId, game_name, total_score, total_time_taken, error, played_date) VALUES(:userId, :game_name, :total_score, :total_time_taken, :error, :played_date)")
+    long insert(int userId, String game_name, String total_score, String total_time_taken, String error, String played_date);
+
 }

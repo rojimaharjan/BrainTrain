@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
+import androidx.work.Data;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,7 +14,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
@@ -28,8 +31,16 @@ import com.robotz.braintrain.Entity.UserInfo;
 import com.robotz.braintrain.ViewModel.UserInfoViewModel;
 import com.robotz.braintrain.ViewModel.UserViewModel;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import static android.text.TextUtils.concat;
 
@@ -45,16 +56,18 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     private UserInfoViewModel userInfoViewModel;
 
     private UserInfoDao userInfoDao;
-    private CharSequence FathersFirstName;
-    private CharSequence MothersMaidenName;
-    private CharSequence DateOfBirth;
-    private CharSequence Diagnosis;
+    private String FathersFirstName;
+    private String MothersMaidenName;
+    private String DateOfBirth;
+    private String Diagnosis;
     Long idForUser;
     GoogleDriverServiceHelper googleDriverServiceHelper;
     private BrainTrainDatabase connDB;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("users");
     DatabaseReference userRef;
+    Calendar mcurrentTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,25 +95,32 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
 
     @Override
     public void fathersFN(CharSequence fathersFN) {
-        FathersFirstName = fathersFN;
+        FathersFirstName = fathersFN.toString();
     }
 
     @Override
     public void mothersMN(CharSequence mothersMN) {
-        MothersMaidenName = mothersMN;
+        MothersMaidenName = mothersMN.toString();
     }
 
     @Override
     public void dob(CharSequence dob) {
-        DateOfBirth = dob;
+        DateOfBirth = dob.toString();
         CharSequence username = createUsername();
         connDB.clearAllTables();
-
-        User user = new User(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(), username.toString());
+        String FN = FathersFirstName;
+        String MN = MothersMaidenName;
+        String DOB = DateOfBirth;
+        try {
+            FN = encrypt(FN, username);
+            MN = encrypt(MN, username);
+            DOB = encrypt(DOB, username);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println(FN);
+        User user = new User(FN, MN, DOB, username.toString());
         idForUser = userDao.insert(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(), username.toString());
-        /*SuccessFragment frag = new SuccessFragment();
-        frag.getUsername(username.toString());*/
-        Toast.makeText(this, "" + FathersFirstName + "  " + MothersMaidenName + " " + idForUser, Toast.LENGTH_LONG).show();
 
 
         userRef = myRef.child(username.toString());
@@ -117,35 +137,46 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
 
     }
 
+    private String encrypt(String Data, CharSequence username) throws Exception {
+        SecretKey key = generateKey(username);
+        Cipher c = Cipher.getInstance("AES");
+        c.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encVal = c.doFinal(Data.getBytes());
+        String encryptedValue = Base64.encodeToString(encVal, Base64.DEFAULT);
+        return  encryptedValue;
+    }
+
+    private SecretKey generateKey(CharSequence username) throws Exception {
+        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        String un = username.toString();
+        byte[] bytes = un.getBytes("UTF-8");
+        digest.update(bytes, 0, bytes.length);
+        byte[] key = digest.digest();
+        SecretKey secretKeySpec = new SecretKeySpec(key, "AES");
+        return secretKeySpec;
+    }
+
     @Override
     public void diagnosis(CharSequence Diagnosis) {
         Diagnosis = Diagnosis;
-/*        CharSequence username = createUsername();
-        User user = new User(FathersFirstName.toString(), MothersMaidenName.toString(), username.toString());
-        idForUser = userDao.insert(user);*/
         UserInfo userInfo = new UserInfo(idForUser.intValue(), Diagnosis.toString());
         userInfoDao.insert(userInfo);
         connDB.close();
 
+        mcurrentTime = Calendar.getInstance();
+        String medStartDate = mcurrentTime.getTime().toString();
         DatabaseReference userInfoRef = userRef.child("userInfo");
         Map<String, String> userInfoMap = new HashMap<>();
         userInfoMap.put("diagnosis", Diagnosis.toString());
+        userInfoMap.put("created_on", medStartDate);
         userInfoRef.setValue(userInfoMap);
 
     }
 
-    private void SaveUser() {
-//        CharSequence username = createUsername();
-        CharSequence fn = FathersFirstName.subSequence(0, 3);
-        CharSequence mn = MothersMaidenName.subSequence((MothersMaidenName.length() - 3), 3);
-        CharSequence username = concat(fn, mn, DateOfBirth);
-        Toast.makeText(this, "" + username + "  " + Diagnosis, Toast.LENGTH_LONG).show();
-
-    }
-
     private CharSequence createUsername() {
-        CharSequence fn = FathersFirstName.subSequence(0, 3);
-        CharSequence mn = MothersMaidenName.subSequence(0, 3);
+        String mmn = MothersMaidenName;
+        CharSequence fn = FathersFirstName.substring(0,3);
+        CharSequence mn = mmn.substring(mmn.length()-3);
         CharSequence username = concat(fn, mn, DateOfBirth);
         return username;
     }
@@ -168,7 +199,6 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
                             case DialogInterface.BUTTON_POSITIVE:
                                 Intent intent = new Intent(signup.this, MainActivity.class);
                                 startActivity(intent);
-//                                Toast.makeText(activity, "here in toolbar", Toast.LENGTH_SHORT).show();
 
                                 break;
 
@@ -182,7 +212,6 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
                 AlertDialog.Builder builder = new AlertDialog.Builder(signup.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 builder.setMessage("Do you want to exit?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
-//                Toast.makeText(activity, "here in toolbar", Toast.LENGTH_SHORT).show();
             }
         });
 

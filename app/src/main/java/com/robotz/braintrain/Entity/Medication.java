@@ -29,7 +29,7 @@ public class Medication {
     private boolean delete;
 
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    private Date modified_date;
+    private Long modified_date;
 
 
 
@@ -41,7 +41,7 @@ public class Medication {
     }
 
 
-    public void setModified_date(Date modified_date) {
+    public void setModified_date(Long modified_date) {
         this.modified_date = modified_date;
     }
 
@@ -75,7 +75,7 @@ public class Medication {
         return as_needed;
     }
 
-    public Date getModified_date() {
+    public Long getModified_date() {
         return modified_date;
     }
 

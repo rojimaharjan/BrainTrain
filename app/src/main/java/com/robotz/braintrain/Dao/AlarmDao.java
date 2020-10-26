@@ -28,4 +28,8 @@ public interface AlarmDao {
 
     @Query("SELECT * FROM alarm_table WHERE id = 'id'")
     LiveData<List<Alarm>> getAllAlarms();
+
+    @Query("SELECT * FROM alarm_table WHERE medicationId = :id")
+    List<Alarm> getcurrentAlarms(int id);
+
 }

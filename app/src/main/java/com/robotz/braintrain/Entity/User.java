@@ -4,10 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.api.client.util.DateTime;
-
-import java.util.Date;
-
 @Entity(tableName = "user_table")
 public class User {
 
@@ -20,7 +16,7 @@ public class User {
     private String username;
 
     @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
-    private Date created_on;
+    private Long created_on;
 
     public User(String fathers_first_name, String mothers_maiden_name,String date_of_birth, String username) {
         this.fathers_first_name = fathers_first_name;
@@ -30,11 +26,11 @@ public class User {
     }
 
 
-    public Date getCreated_on() {
+    public Long getCreated_on() {
         return created_on;
     }
 
-    public void setCreated_on(Date created_on) {
+    public void setCreated_on(Long created_on) {
         this.created_on = created_on;
     }
 

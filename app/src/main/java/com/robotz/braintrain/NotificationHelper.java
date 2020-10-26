@@ -48,9 +48,10 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentText(message);
     }*/
 
-    public NotificationCompat.Builder getAlarmNotificaiton(){
+    public NotificationCompat.Builder getAlarmNotificaiton(String message){
         return new NotificationCompat.Builder(getApplicationContext(), alarmId)
-                .setContentTitle("Medication Alert")
+                .setContentTitle("Brain Train Alert")
+                .setContentText(message)
                 .setSmallIcon(R.drawable.icons8_alarm_32);
     }
 

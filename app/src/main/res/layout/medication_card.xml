@@ -53,7 +53,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/reminderIcon"
+            android:id="@+id/imagedelete"
             android:src="@drawable/icons8_alarm_32"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"/>
