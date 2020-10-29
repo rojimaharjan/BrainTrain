@@ -99,8 +99,11 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     private AlarmDao alarmDao;
     public BrainTrainDatabase connDB;
     List<Calendar> alarmList = new ArrayList<>();
-    private String currentUser, position;
+    private String currentUser;
+    public Medication currentMedication;
     String medStartDate;
+    boolean isEditing = false;
+    boolean edited= false;
 
     Calendar mcurrentTime, AT;
 
@@ -112,8 +115,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     DatabaseReference medicationRef;
     private UserDao userDao;
     public String MN, sD, d, dt, f, ft;
-    public String edit= "false";
-
+    public String edit= new String();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -144,24 +146,42 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
 
         currentUser = sharedPreferences.getString("currentUser", "");
 
-        edit = getArguments().getString("edit");
+        /*try{
+            edit = getArguments().getString("edit");
+        } catch(Exception ex){
+            edit = "false";
+        }*/
 
-        if(edit.equals("true")) {
-            position = getArguments().getString("currentMedication");
+
+        if(!isEditing) {
+            edit = getArguments().getString("edit");
+            edited = Boolean.parseBoolean(edit);
+        }
+
+
+
+        if(edited) {
+            edited = false;
+            isEditing = true;
+            String position = getArguments().getString("currentMedication");
             int currentPosition = Integer.parseInt(position);
-            Medication currentMedication = medicationDao.getMedication(currentPosition);
+            currentMedication = medicationDao.getMedication(currentPosition);
             MN = currentMedication.getMed_name().toString();
             boolean asNeeded = currentMedication.isAs_needed();
             if(!asNeeded){
                 Duration currentDuration = durationDao.getDuration(currentPosition);
-                d = currentDuration.getDuration_type();
-                dt= currentDuration.getDuration_time();
+                if(currentDuration != null){
+                    d = currentDuration.getDuration_type();
+                    dt= currentDuration.getDuration_time();
+                }
 
                 Frequency currentFrequency = frequencyDao.getFrequency(currentPosition);
-                f = currentFrequency.getFrequency_type();
-                ft = currentFrequency.getFrequency_time();
-                Bundle args = new Bundle();
-                args.putString("edit", "false");
+                if(currentFrequency != null){
+                    f = currentFrequency.getFrequency_type();
+                    ft = currentFrequency.getFrequency_time();
+                }
+
+
                 List<Alarm> currentAlarmList = alarmDao.getcurrentAlarms(currentPosition);
                 if(currentAlarmList.size() >0){
                     for(int i = 0; i < currentAlarmList.size(); i++)
@@ -172,29 +192,30 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                         int h = currentAlarmList.get(i).getAlarm_time_hour();
                         int m = currentAlarmList.get(i).getAlarm_time_minute();
                         Calendar c = Calendar.getInstance();
+                        c.set(c.HOUR_OF_DAY, h);
+                        c.set(c.MINUTE, m);
                         String time = h + ":"+m;
-                        alarmText.setText(time);
-                        reminderLL.addView(alarm);
+                        DisplayAlarm(c);
+
+
                     }
 
                 }
             }else{
-                asneededCheckbox.isChecked();
+                asneededCheckbox.setChecked(true);
                 reminderLL.setVisibility(View.INVISIBLE);
+                /*frequency.setText("Daily, X times a day");
+                duration.setText("No end date");*/
             }
 
         }else{
-             MN = getArguments().getString("MedName");
+            MN = getArguments().getString("MedName");
             sD = sharedPreferences.getString("StartDate", "");
             d = sharedPreferences.getString("Duration", "");
             dt = sharedPreferences.getString("SubDuration", "");
             f = sharedPreferences.getString("Frequency", "");
             ft = sharedPreferences.getString("SubFrequency", "");
         }
-
-
-
-
 
 
         ///do the saving process
@@ -272,41 +293,98 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                 User user = userDao.currentuserid(currentUser);
                 Medication medication = new Medication(user.getUserId(), medN, type, asNeeded);
 //                long medId= medication.insert
-                long medid = medicationDao.insert(userDao.currentuserid(currentUser).getUserId(), medN, type, asNeeded);
-                String medicationId =Integer.toString((int) medid);
-                DatabaseReference medicationRef = myRef.child(currentUser).child("medication").child(medicationId);
-                Map<String, String> medicationMap = new HashMap<>();
-                medicationMap.put("medication_name", medN);
-                medicationMap.put("type", type);
-                medicationMap.put("asNeeded", Boolean.toString(asNeeded));
-                medicationMap.put("isDeleted", "false");
-                medicationRef.setValue(medicationMap);
+
+
+                //*****medication edit start****************8//
+                if(edit.equals("true")){
+                    int medId = currentMedication.getId();
+                    medicationDao.updateMedication(medN, type, asNeeded, medId);
+                    DatabaseReference medicationRef = myRef.child(currentUser).child("medication").child(String.valueOf(medId));
+                    Map<String, String> medicationMap = new HashMap<>();
+                    medicationMap.put("medication_name", medN);
+                    medicationMap.put("type", type);
+                    medicationMap.put("asNeeded", Boolean.toString(asNeeded));
+                    medicationMap.put("isDeleted", "false");
+                    medicationRef.setValue(medicationMap);
+
+                    if(!asNeeded){
+                        Duration currentduration = durationDao.getDuration(medId);
+                        durationDao.updateDuration(medStartDate, dur, durT, medId);
+                        DatabaseReference durationRef = medicationRef.child("currentduration");
+                        Map<String, String> durationMap = new HashMap<>();
+                        durationMap.put("start_date", sD);
+                        durationMap.put("duration_type", dur);
+                        durationMap.put("duration_time", durT);
+                        durationRef.setValue(durationMap);
+
+
+                        DatabaseReference frequencyRef = medicationRef.child("frequency");
+                        Map<String, String> frequencyMap = new HashMap<>();
+                        frequencyDao.updateFrequency(fre, freT, medId);
+                        frequencyMap.put("frequency_type", fre);
+                        frequencyMap.put("frequency_time", freT);
+                        frequencyRef.setValue(frequencyMap);
 
 
 
-                if(!aN){
-                    Duration duration = new Duration((int) medid, medStartDate, dur, durT);
-                    durationDao.insert(duration);
-                    DatabaseReference durationRef = medicationRef.child("duration");
-                    Map<String, String> durationMap = new HashMap<>();
-                    durationMap.put("start_date", sD);
-                    durationMap.put("duration_type", dur);
-                    durationMap.put("duration_time", durT);
-                    durationRef.setValue(durationMap);
+
+                    }
+
+                    //delete alarm and save new one
+
+                    List<Alarm> alarms = alarmDao.getcurrentAlarms((int) medId);
+                    if(alarms != null){
+                        alarmDao.deleteAlarms((int) medId);
+                    }
+
+                    int alarmcount = alarmList.size();
+                    AddAlarm(medId);
+                    clearSharedPreference();
+
+                }
+                else{
+                    //save medication data
+                    long medid = medicationDao.insert(userDao.currentuserid(currentUser).getUserId(), medN, type, asNeeded);
+                    String medicationId =Integer.toString((int) medid);
+                    DatabaseReference medicationRef = myRef.child(currentUser).child("medication").child(medicationId);
+                    Map<String, String> medicationMap = new HashMap<>();
+                    medicationMap.put("medication_name", medN);
+                    medicationMap.put("type", type);
+                    medicationMap.put("asNeeded", Boolean.toString(asNeeded));
+                    medicationMap.put("isDeleted", "false");
+                    medicationRef.setValue(medicationMap);
 
 
-                    Frequency frequency = new Frequency((int) medid, fre, freT);
-                    DatabaseReference frequencyRef = medicationRef.child("frequency");
-                    Map<String, String> frequencyMap = new HashMap<>();
-                    frequencyDao.insert(frequency);
-                    frequencyMap.put("frequency_type", fre);
-                    frequencyMap.put("frequency_time", freT);
-                    frequencyRef.setValue(frequencyMap);
+                    if(!aN){
+                        Duration duration = new Duration((int) medid, sD, dur, durT);
+                        durationDao.insert(duration);
+                        DatabaseReference durationRef = medicationRef.child("duration");
+                        Map<String, String> durationMap = new HashMap<>();
+                        durationMap.put("start_date", sD);
+                        durationMap.put("duration_type", dur);
+                        durationMap.put("duration_time", durT);
+                        durationRef.setValue(durationMap);
+
+
+                        Frequency frequency = new Frequency((int) medid, fre, freT);
+                        DatabaseReference frequencyRef = medicationRef.child("frequency");
+                        Map<String, String> frequencyMap = new HashMap<>();
+                        frequencyDao.insert(frequency);
+                        frequencyMap.put("frequency_type", fre);
+                        frequencyMap.put("frequency_time", freT);
+                        frequencyRef.setValue(frequencyMap);
+
+
+
+                    }
+
+    //                Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
+                    //save alarm and set alarm
+                    AddAlarm(medid);
+                    clearSharedPreference();
                 }
 
-//                Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
-                //save alarm and set alarm
-                AddAlarm(medid);
+                //*********save medication ends//
 
                 ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "", false);
 
@@ -334,14 +412,22 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
         durationLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationHost) getActivity()).navigateTo(new DurationFragment(), "Duration", true);
+                DurationFragment durationFragment = new DurationFragment();
+                Bundle args = new Bundle();
+                args.putString("duration", duration.getText().toString());
+                durationFragment.setArguments(args);
+                ((NavigationHost) getActivity()).navigateTo(durationFragment, "Duration", true);
             }
         });
 
         frequencyLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((NavigationHost) getActivity()).navigateTo(new FrequencyFragment(), "Frequency", true);
+                FrequencyFragment frequencyFragment = new FrequencyFragment();
+                Bundle args = new Bundle();
+                args.putString("edit", "false");
+                frequencyFragment.setArguments(args);
+                ((NavigationHost) getActivity()).navigateTo(frequencyFragment, "Frequency", true);
             }
         });
 
@@ -356,7 +442,19 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
             }
         });
 
+        ((NavigationHost) getActivity()).setUpBackBtn(view);
         return view;
+    }
+
+    private void clearSharedPreference() {
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("StartDate");
+        editor.remove("Duration");
+        editor.remove("SubDuration");
+        editor.remove("Frequency");
+        editor.remove("SubFrequency");
+        editor.apply();
     }
 
     private void AddAlarm(long medid) {
@@ -382,10 +480,6 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
             public void onClick(View v) {
                 reminderLL.removeViewInLayout(alarm);
                 alarmList.remove(AT);
-//                reminderLL.removeAllViews(); // to remove all views
-//                alarm.getId();
-//                reminderLL.removeViewAt(v.getId());
-//                int s = v.getId();
             }
         });
 
@@ -400,8 +494,21 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
         final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, at.getTimeInMillis(),24*60*60*1000, pendingIntent);
-        Alarm alarm = new Alarm(medid, id, at.HOUR, at.MINUTE);
-        alarmDao.insert(alarm);
+        if (android.text.format.DateFormat.is24HourFormat(getContext())){
+            String hournadminute = DateFormat.getTimeInstance(DateFormat.SHORT).format(AT.getTime());
+            String[] hourMin = hournadminute.split(":");
+            int hour = Integer.parseInt(hourMin[0]);
+            int mins = Integer.parseInt(hourMin[1]);
+            Alarm alarm = new Alarm(medid, id, hour, mins);
+            alarmDao.insert(alarm);
+        }
+        else {
+
+            Alarm alarm = new Alarm(medid, id, at.HOUR_OF_DAY, at.MINUTE);
+            alarmDao.insert(alarm);
+        }
+
+
 
         DatabaseReference alarmRef = myRef.child(currentUser).child("alarm").child(String.valueOf(id));
         Map<String, String> alarmMap = new HashMap<>();
@@ -419,38 +526,9 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     }
 
 
-  /*  @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if(context instanceof AddMedicationFragment.saveMedicationData){
-            listener = (saveMedicationData) context;
-        }else {
-            throw  new RuntimeException(context.toString()
-                    +"must implement FragmentListner");
-        }
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }*/
-
-/*    @Override
-    public void frequencyData(String frequency, String Subfrequency) {
-        Toast.makeText(getContext(), frequency + " " + Subfrequency, Toast.LENGTH_SHORT).show();
-    }*/
-
-/*    @Override
-    public void medName(String mn) {
-        medName = mn;
-    }*/
-
     @Override
     public void onPositiveButtonClicked(String[] list, int position) {
         pills.setText(list[position]);
-        Toast.makeText(getContext(), "here", Toast.LENGTH_SHORT).show();
     }
 
     @Override

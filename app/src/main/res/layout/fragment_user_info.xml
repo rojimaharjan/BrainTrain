@@ -101,7 +101,8 @@
                 app:iconTintMode="multiply"
                 android:onClick="backupDB"
                 android:text="Drive"
-                tools:ignore="OnClick" />
+                tools:ignore="OnClick"
+                android:enabled="false"/>
 
         </RelativeLayout>
         <View

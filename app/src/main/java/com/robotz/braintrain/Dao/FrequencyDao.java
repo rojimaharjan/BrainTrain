@@ -29,6 +29,9 @@ public interface FrequencyDao {
     @Query("SELECT * FROM frequency_table WHERE id = 'id'")
     LiveData<List<Frequency>> getAllFrequencies();
 
-    @Query("SELECT * FROM frequency_table WHERE id = :medicationId")
+    @Query("SELECT * FROM frequency_table WHERE medicationId = :medicationId")
     Frequency getFrequency(int medicationId);
+
+    @Query("UPDATE frequency_table SET frequency_type = :fre_type, frequency_time = :time WHERE medicationId = :id")
+    void updateFrequency(String fre_type, String time, int id);
 }

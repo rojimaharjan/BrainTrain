@@ -90,7 +90,7 @@ public class AlarmRepository {
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            alarmDao.deleteAllAlarms();
+//            alarmDao.deleteAllAlarms();
             return null;
         }
     }

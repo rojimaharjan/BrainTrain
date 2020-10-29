@@ -46,7 +46,7 @@ public class MedicationCardRecyclerViewAdapter extends RecyclerView.Adapter<Medi
     @Override
     public MedicationCardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.medication_card, parent, false);
-        return new MedicationCardViewHolder(layoutView, editlistener);
+        return new MedicationCardViewHolder(layoutView, editlistener, medications);
     }
 
 
@@ -91,7 +91,7 @@ public class MedicationCardRecyclerViewAdapter extends RecyclerView.Adapter<Medi
         public TextView Unit;
         public ImageView DeleteImage;
 
-        public MedicationCardViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        public MedicationCardViewHolder(@NonNull View itemView, final OnItemClickListener listener, List<Medication> medicationList) {
             super(itemView);
             MedicationName = itemView.findViewById(R.id.MedicationName);
             Unit = itemView.findViewById(R.id.MedicationUnit);
@@ -103,10 +103,12 @@ public class MedicationCardRecyclerViewAdapter extends RecyclerView.Adapter<Medi
                     System.out.println("clicked"+ view.getVerticalScrollbarPosition() + " position "+ getPosition());
                     if (listener != null) {
                         int position = getAdapterPosition();
+                        Medication medication = medicationList.get(position);
+                        int medPosition = medication.getId();
                         System.out.println(position);
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onItemClick(position);
-                            System.out.println(position);
+                        if(medPosition != RecyclerView.NO_POSITION){
+                            listener.onItemClick(medPosition);
+                            System.out.println(medPosition);
 
                         }
                     }

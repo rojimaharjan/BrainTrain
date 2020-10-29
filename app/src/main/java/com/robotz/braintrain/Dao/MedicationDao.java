@@ -27,6 +27,9 @@ public interface MedicationDao {
     @Query("UPDATE medication_table SET `delete` = :delete WHERE id = :id")
     void updateDelete(boolean delete, int id);
 
+    @Query("UPDATE medication_table SET med_name = :med_name, type = :type, as_needed = :asNeeded WHERE id = :id")
+    void updateMedication(String med_name, String type, boolean asNeeded, int id);
+
     @Delete
     void delete(Medication medication);
 

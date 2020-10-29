@@ -52,11 +52,12 @@ public class LoginFragment extends Fragment {
     Boolean rememberMe = false;
     private BrainTrainDatabase connDB;
     private String backUpUserName;
+    public TextInputLayout passwordTextInput;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
-        final TextInputLayout passwordTextInput = view.findViewById(R.id.username_text_input);
+        passwordTextInput = view.findViewById(R.id.username_text_input);
         passwordEditText = view.findViewById(R.id.username_edit_text);
         downloadButton = view.findViewById(R.id.download_button);
 
@@ -83,18 +84,15 @@ public class LoginFragment extends Fragment {
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onClick(View view) {
-                /*((MainActivity)getActivity()).verifyStoragePermissions(getActivity());
-                ((MainActivity)getActivity()).requestSignIn();*/
-//                getUserName();
+            public void onClick(View v) {
                 if(isConnected()){
+                    ((MainActivity)getActivity()).requestSignIn();
                     backUpUserName = passwordEditText.getText().toString();
                     if (!backUpUserName.isEmpty()) {
                         try {
                             ((MainActivity) getActivity()).downloadDB(backUpUserName);
 
-                            getActivity().finish();
-                            startActivity(getActivity().getIntent());
+                            getActivity().startActivity(new Intent(getContext(), MainActivity.class));
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -102,10 +100,10 @@ public class LoginFragment extends Fragment {
                         Toast.makeText(getContext(), "Please fill username for restoring database. ", Toast.LENGTH_SHORT).show();
                         passwordTextInput.setError(null); // Clear the error
                     }
+
                 }else{
                     Toast.makeText(getContext(), "Please connect to the internet.", Toast.LENGTH_SHORT).show();
                 }
-
 
             }
         });
@@ -149,6 +147,7 @@ public class LoginFragment extends Fragment {
         });
         return view;
     }
+
 
     private void getUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

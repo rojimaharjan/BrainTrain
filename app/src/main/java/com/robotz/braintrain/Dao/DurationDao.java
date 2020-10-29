@@ -30,4 +30,8 @@ public interface DurationDao {
 
     @Query("SELECT * FROM duration_table WHERE medicationId = :medicationId")
     Duration getDuration(int medicationId);
+
+    @Query("UPDATE duration_table SET start_date = :start_date, duration_type = :dur_type, duration_time = :time WHERE medicationId = :id")
+    void updateDuration(String start_date, String dur_type, String time, int id);
+
 }

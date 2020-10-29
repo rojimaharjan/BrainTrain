@@ -10,4 +10,5 @@ public interface NavigationHost {
 
     void setUpToolbar(View view);
     void setUpBackBtn(View view);
+    void setUpBackBtnAddMed(View view);
 }

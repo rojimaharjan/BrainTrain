@@ -55,6 +55,7 @@ public class MedicationNameFragment extends Fragment {
             }
         });
 
+        ((NavigationHost) getActivity()).setUpBackBtn(view);
         return view;
     }
 

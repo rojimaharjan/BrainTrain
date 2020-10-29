@@ -45,7 +45,7 @@ public class SignUpLNFragment extends Fragment {
                             .addToBackStack(null)
                             .commit();
                 }else{
-                    mnTextInput.setError(getString(R.string.error_fathersfirstname));
+                    mnTextInput.setError(getString(R.string.error_name));
 
                 }
 
@@ -64,7 +64,7 @@ public class SignUpLNFragment extends Fragment {
     }
 
     private boolean validName(Editable text) {
-        return text != null && text.length() >= 3;
+        return text != null && text.length() >= 4;
     }
 
     @Override

@@ -22,9 +22,9 @@ android {
 //                arguments = ["room.schemaLocation": "E:/Masters/Game/BrainTrain/app/schemas".toString()]
             }
         }
-        ndk {
+      /*  ndk {
             abiFilters "armeabi", "armeabi-v7a"
-        }
+        }*/
     }
 
 

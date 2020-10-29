@@ -23,8 +23,8 @@ public interface AlarmDao {
     @Delete
     void delete(Alarm alarm);
 
-    @Query("DELETE FROM alarm_table")
-    void deleteAllAlarms();
+    @Query("DELETE FROM alarm_table WHERE medicationId = :id")
+    void deleteAlarms(int id);
 
     @Query("SELECT * FROM alarm_table WHERE id = 'id'")
     LiveData<List<Alarm>> getAllAlarms();

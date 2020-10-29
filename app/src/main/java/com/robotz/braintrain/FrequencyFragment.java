@@ -135,6 +135,8 @@ public class FrequencyFragment extends Fragment implements NumberPicker.OnValueC
                 }
             }
         });
+
+        ((NavigationHost) getActivity()).setUpBackBtn(view);
         return view;
     }
 

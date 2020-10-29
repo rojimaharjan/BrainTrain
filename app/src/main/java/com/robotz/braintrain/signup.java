@@ -21,8 +21,11 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Dao.UserInfoDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
@@ -67,6 +70,7 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     DatabaseReference myRef = database.getReference("users");
     DatabaseReference userRef;
     Calendar mcurrentTime;
+    CharSequence username;
 
 
     @Override
@@ -106,8 +110,14 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     @Override
     public void dob(CharSequence dob) {
         DateOfBirth = dob.toString();
-        CharSequence username = createUsername();
+        username = createUsername();
         connDB.clearAllTables();
+        saveUser();
+
+
+    }
+
+    private boolean saveUser() {
         String FN = FathersFirstName;
         String MN = MothersMaidenName;
         String DOB = DateOfBirth;
@@ -120,7 +130,7 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         }
         System.out.println(FN);
         User user = new User(FN, MN, DOB, username.toString());
-        idForUser = userDao.insert(FathersFirstName.toString(), MothersMaidenName.toString(), DateOfBirth.toString(), username.toString());
+        idForUser = userDao.insert(FN, MN, DOB, username.toString());
 
 
         userRef = myRef.child(username.toString());
@@ -134,7 +144,7 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
         editor.putString("currentUser", username.toString());
 
         editor.apply();
-
+        return true;
     }
 
     private String encrypt(String Data, CharSequence username) throws Exception {
@@ -159,10 +169,10 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
     @Override
     public void diagnosis(CharSequence Diagnosis) {
         Diagnosis = Diagnosis;
+        boolean userCreated = saveUser();
         UserInfo userInfo = new UserInfo(idForUser.intValue(), Diagnosis.toString());
         userInfoDao.insert(userInfo);
         connDB.close();
-
         mcurrentTime = Calendar.getInstance();
         String medStartDate = mcurrentTime.getTime().toString();
         DatabaseReference userInfoRef = userRef.child("userInfo");
@@ -175,8 +185,8 @@ public class signup extends AppCompatActivity implements SignUpFNFragment.onFrag
 
     private CharSequence createUsername() {
         String mmn = MothersMaidenName;
-        CharSequence fn = FathersFirstName.substring(0,3);
-        CharSequence mn = mmn.substring(mmn.length()-3);
+        CharSequence fn = FathersFirstName.substring(0,4);
+        CharSequence mn = mmn.substring(mmn.length()-4);
         CharSequence username = concat(fn, mn, DateOfBirth);
         return username;
     }

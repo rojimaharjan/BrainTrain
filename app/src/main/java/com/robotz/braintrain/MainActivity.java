@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         verifyStoragePermissions(this);
-        requestSignIn();
+//        requestSignIn();
 
         boolean mboolean = false;
         sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
@@ -300,13 +300,9 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         switch (view.getId()) {
             case (R.id.home):
                 navigateTo(new HomeFragment(), "home", true);
-                /*Intent intent = new Intent(MainActivity.this, AddMedicationFragment.class);
-                startActivityForResult(intent, ADD_MED_REQUEST);*/
                 break;
             case (R.id.medication):
                 navigateTo(new MedicationFragment(), "medication", true);
-                /*Intent intent = new Intent(MainActivity.this, AddMedicationFragment.class);
-                startActivityForResult(intent, ADD_MED_REQUEST);*/
                 break;
 
             case (R.id.userinfo):
@@ -334,7 +330,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
                 sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
                 if (sharedPreferences.getBoolean("RememberMe", false)!= true) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.clear();
+                    editor.remove("RememberMe");
+                    editor.remove("currentUser");
                     editor.apply();
                 }
                 break;
@@ -358,8 +355,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
                 MainActivity.this.getResources().getDrawable(R.drawable.shr_close_menu))); // Menu close icon
 
 
-    }
 
+    }
 
     public void setUpBackBtn(View view){
         Toolbar backbtn = view.findViewById(R.id.app_bar);
@@ -371,61 +368,23 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         });
     }
 
-/*@Override
-    public void setDateValue(String date) {
-        Fragment forXDaysFragment = new ForXDaysFragment();
-        ((ForXDaysFragment) forXDaysFragment).ChangeDayValue(date);
-    }*/
-/*    @Override
-    public void setDateValue(String date) {
-        Fragment untildate = new UntilDateFragment();
-        ((UntilDateFragment) untildate).setDateValue(date);
-    }*/
-
-/*    @Override
-    public void setDayValue(int day) {
-        forXDaysFragment.ChangeDayValue(day);
-    }*/
-
-  /*  @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == ADD_MED_REQUEST && resultCode == RESULT_OK){
-            String medName = data.getStringExtra(AddMedicationFragment.EXTRA_MEDICATIONNAME);
-            String type = data.getStringExtra(AddMedicationFragment.EXTRA_TYPE);
-            String startDate = data.getStringExtra(AddMedicationFragment.EXTRA_TYPE);
-            boolean asneeded = data.getBooleanExtra(AddMedicationFragment.EXTRA_ASNEEDED, false);
-            String duration = data.getStringExtra(AddMedicationFragment.EXTRA_DURATION);
-            String durationTime = data.getStringExtra(AddMedicationFragment.EXTRA_DURATIONTIME);
-            String frequency = data.getStringExtra(AddMedicationFragment.EXTRA_FREQUENCY);
-            String frequencyTime = data.getStringExtra(AddMedicationFragment.EXTRA_FREQUENCYTIME);
-            Medication medication = new Medication(1, medName, type, asneeded);
-            AsyncTask<Medication, Void, Long> id = medicationViewModel.insert(medication);
-            Toast.makeText(this, "id" + id, Toast.LENGTH_SHORT).show();
-            if(!asneeded)
-            {
-                Toast.makeText(this, "id" + asneeded, Toast.LENGTH_SHORT).show();
+    public void setUpBackBtnAddMed(View view){
+        Toolbar backbtn = view.findViewById(R.id.app_bar);
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*navigateTo(new AddMedicationFragment(), "home", false);*/
+                getFragmentManager().popBackStackImmediate();
             }
+        });
+    }
 
 
-        }
-        else{
-            Toast.makeText(this, "not saved", Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
-/*    @Override
-    public void getMedicationData(String medName, String type, boolean asNeeded) {
-        medicationDao = Room.databaseBuilder(this, BrainTrainDatabase.class, "main_database").allowMainThreadQueries().build().medicationDao();
-        Medication medication = new Medication(1, medName, type, asNeeded);
-        long id = medicationDao.insert(medication);
-        Toast.makeText(this, "medication saved"  , Toast.LENGTH_SHORT).show();
-    }*/
 
 
     //    gdrive upload
-    private void requestSignIn() {
+    public void requestSignIn() {
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
@@ -507,6 +466,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void downloadDB(String userName) throws FileNotFoundException {
 
+//        requestSignIn();
 //        String fileId = "11RIqrEladA8uwaSB_4rUz7bmU10EeVQmdd";
         String filePath = this.getDatabasePath(connDB.DBNAME).getAbsolutePath();
         System.out.println("user is: "+userName);
@@ -517,17 +477,25 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                uploadedFileID = dataSnapshot.child("googleFileUploadedId").getValue().toString();
-                System.out.println(uploadedFileID);
+                if(dataSnapshot.child("googleFileUploadedId").exists()){
+                    uploadedFileID = dataSnapshot.child("googleFileUploadedId").getValue().toString();
+                    System.out.println(uploadedFileID);
+                    System.out.println(filePath);
+                }else {
+                    System.out.println("usernot avaiable");
+                    Toast.makeText(getApplicationContext(), uploadedFileID+"Backup not available", Toast.LENGTH_LONG).show();
+
+
+                }
 
                 restoreDBCheck();
                 try {
                     googleDriverServiceHelper.callDownload(uploadedFileID, filePath).addOnSuccessListener(new OnSuccessListener<String>() {
                         @Override
                         public void onSuccess(String s) {
-                            System.out.println(s);
+//                            System.out.println(s);
                             soutUsers();
-                            Toast.makeText(getApplicationContext(), uploadedFileID+" is downloaded successfully", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), uploadedFileID+" Data is downloaded successfully", Toast.LENGTH_LONG).show();
                         }
                     })
                             .addOnFailureListener(new OnFailureListener() {
@@ -538,6 +506,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
                             });
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), uploadedFileID+"Backup not available", Toast.LENGTH_LONG).show();
+                    return;
                 }
             }
 
@@ -659,7 +629,6 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
             editor.putString("GameDataArray", jsonArray.toString());
             editor.putString("GamePlayed", "yes");
             editor.apply();
-            System.out.println("yetasammaaakoxa");
 
 //            mUnityPlayer.quit();
             UnityPlayer.currentActivity.finish();

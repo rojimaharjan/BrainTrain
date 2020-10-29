@@ -1,5 +1,6 @@
 package com.robotz.braintrain;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -50,7 +51,7 @@ public class MedicationFragment extends Fragment {
     private BrainTrainDatabase connDB;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     SharedPreferences sharedPreferences;
-    public String currentUser;
+    public String currentUser, currentMedication;
     private MedicationCardRecyclerViewAdapter mAdapter;
 
     @Override
@@ -84,19 +85,20 @@ public class MedicationFragment extends Fragment {
 
         //edit medication//
 
-        /*mAdapter.setOnItemClickListener(new MedicationCardRecyclerViewAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new MedicationCardRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 AddMedicationFragment amf = new AddMedicationFragment();
                 Bundle args = new Bundle();
-               String currentMedication = String.valueOf(position);
+               currentMedication = String.valueOf(position);
+                System.out.println(currentMedication + "current position");
                 args.putString("currentMedication", currentMedication);
                 args.putString("edit", "true");
                 amf.setArguments(args);
                 ((NavigationHost) getActivity()).navigateTo(amf, "Edit Medication", false);
 
             }
-        });*/
+        });
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT| ItemTouchHelper.RIGHT) {
@@ -108,7 +110,7 @@ public class MedicationFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Medication position = ((MedicationCardRecyclerViewAdapter) mAdapter).getMedAt(viewHolder.getAdapterPosition());
-                Toast.makeText(getContext(), "position"+position, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(), "position"+position, Toast.LENGTH_LONG).show();
                 System.out.println(position.getId());
                 medicationDao.updateDelete(true, position.getId());
 //                medicationDao.delete(((MedicationCardRecyclerViewAdapter) adapter).getMedAt(viewHolder.getAdapterPosition()));
@@ -121,7 +123,9 @@ public class MedicationFragment extends Fragment {
 //                medicationRef.push().setValue(medicationMap);
 
                 mAdapter.notifyDataSetChanged();
-//                Toast.makeText(getContext(), "Medication Deleted", Toast.LENGTH_SHORT).show();
+                ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "Add Medication", true);
+
+                Toast.makeText(getContext(), "Medication Deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -81,6 +82,10 @@ public class SignUpDiagnosisFragment extends Fragment {
             public void onClick(View view) {
                 CharSequence Diagnosis = diagnosis.toString();
                 listner.diagnosis(Diagnosis);
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                    fm.popBackStack();
+                }
                 SuccessFragment successfrag = new SuccessFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.signupContainer, successfrag)

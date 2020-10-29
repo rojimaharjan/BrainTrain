@@ -42,7 +42,10 @@ tools:context=".SignUpLNFragment">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:maxLength="20"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜäöü"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 public class UnitDialog extends DialogFragment {
-    int position = 12;
+    int position = 11;
 
     public interface  SingleChoiceListener{
         void onPositiveButtonClicked(String[] list, int position);
@@ -47,7 +47,6 @@ public class UnitDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         position = i;
-
                     }
                 })
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {

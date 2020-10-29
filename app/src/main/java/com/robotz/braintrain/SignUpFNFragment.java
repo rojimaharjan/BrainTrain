@@ -46,7 +46,7 @@ public class SignUpFNFragment extends Fragment {
                             .commit();
                 }
                 else{
-                    usernameTextInput.setError(getString(R.string.error_fathersfirstname));
+                    usernameTextInput.setError(getString(R.string.error_name));
                 }
 
 
@@ -65,7 +65,7 @@ public class SignUpFNFragment extends Fragment {
     }
 
     private boolean validName(String text) {
-        return text != "" && text != null && text.length() >= 3;
+        return text != "" && text != null && text.length() >= 4;
     }
 
 /*

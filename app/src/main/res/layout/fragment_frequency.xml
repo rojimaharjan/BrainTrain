@@ -21,7 +21,6 @@
             android:paddingEnd="12dp"
             android:paddingRight="0dp"
             app:contentInsetStart="0dp"
-            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
             app:title="@string/frequency" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,7 +32,8 @@
         android:id="@+id/radiofrequency"
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingRight="10dp"
+        android:checkedButton="@+id/dailyXtimesaday">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:layout_width="match_parent"

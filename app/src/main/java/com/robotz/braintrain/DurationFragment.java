@@ -19,16 +19,19 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.picker.MaterialDatePickerDialogFragment;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -63,6 +66,7 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
     Toolbar toolbar;
     RadioGroup radiodurationbtn;
     RelativeLayout durationExtraL;
+    RadioButton rb;
     AddMedicationFragment amf = new AddMedicationFragment();
     Bundle args = new Bundle();
 
@@ -75,6 +79,34 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
         durationExtraL = view.findViewById(R.id.durationExtra);
         startdate = view.findViewById(R.id.StartDateTxt);
         Date date = new Date();
+
+
+        sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+        String duration = sharedPreferences.getString("duration", "");
+
+
+        if(duration!= null)
+        {
+            if(duration.equals("No end date")){
+                rb = view.findViewById(R.id.noenddate);
+                rb.setChecked(true);
+            }else if (duration.equals("Until date")){
+                rb = view.findViewById(R.id.unitldate);
+                String subDuration = sharedPreferences.getString("SubDuration", "");
+                TextView tct =  getActivity().findViewById(R.id.dateTxt);
+                tct.setText(subDuration);
+                rb.setChecked(true);
+            }else if(duration.equals("For X days")){
+                rb = view.findViewById(R.id.forXdays);
+                String subDuration = sharedPreferences.getString("SubDuration", "");
+                TextView daytxt =  getActivity().findViewById(R.id.daysTxt);
+                daytxt.setText(subDuration);
+                rb.setChecked(true);
+            }
+        }
+
+
+
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "dd/MM/yyyy", Locale.getDefault());
         startdate.setText(dateFormat.format(date).toString());
@@ -141,7 +173,7 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
             }
         });
 
-
+        ((NavigationHost) getActivity()).setUpBackBtnAddMed(view);
         return view;
     }
 

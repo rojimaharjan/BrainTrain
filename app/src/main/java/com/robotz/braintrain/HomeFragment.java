@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
     private MedicationDao medicationDao;
     int medNumber = 0;
     TextView medicationname;
+    public RelativeLayout medRL;
 
 
     @Override
@@ -65,12 +66,12 @@ public class HomeFragment extends Fragment {
         String medicationAvailable = Integer.toString(medNumber) + " Medication saved";
         medCount.setText(medicationAvailable);
         medicationname = view.findViewById(R.id.MedicationName);
-        medicationname.setOnClickListener(new View.OnClickListener() {
+     /*   medicationname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "",  true);
             }
-        });
+        });*/
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", Context.MODE_PRIVATE);
         currentUser = sharedPreferences.getString("currentUser", "");
@@ -92,6 +93,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), GameSceneActivity.class));
+            }
+        });
+
+        medRL = view.findViewById(R.id.MedLayout);
+        medRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NavigationHost) getActivity()).navigateTo(new MedicationFragment(), "",  true);
             }
         });
 

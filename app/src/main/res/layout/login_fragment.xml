@@ -128,10 +128,9 @@
                 android:backgroundTint="@android:color/transparent"
                 app:icon="@drawable/icons8_google_drive_32"
                 app:iconTintMode="multiply"
-                android:onClick="downloadDB"
                 android:layout_gravity="center_vertical|center_horizontal"
-                tools:ignore="OnClick"
-                android:text="Restore from drive?"/>
+                android:text="Restore from drive?"
+                android:enabled="false"/>
 
         </LinearLayout>
 
