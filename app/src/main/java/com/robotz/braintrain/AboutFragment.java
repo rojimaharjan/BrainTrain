@@ -21,7 +21,9 @@ public class AboutFragment extends Fragment {
                 "Roji Maharjan\n" +
                 "as a part of Master’s thesis\n" +
                 "Universität Passau\n" +
-                "Email: maharj01@gw.uni-passau.de\n");
+                "Email: maharj01@gw.uni-passau.de\n"+
+                "Version\n"+
+                "1.1");
         ((NavigationHost) getActivity()).setUpBackBtn(view);
         return view;
     }

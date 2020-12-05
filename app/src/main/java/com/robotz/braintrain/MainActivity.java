@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, 	PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24*60*60*1000, pendingIntent);
 
 
     /*    alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
@@ -327,13 +327,13 @@ public class MainActivity extends AppCompatActivity implements NavigationHost{
 
             case (R.id.logout):
                 navigateTo(new LoginFragment(), "", false);
-                sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
+                /*sharedPreferences = this.getSharedPreferences("app", MODE_PRIVATE);
                 if (sharedPreferences.getBoolean("RememberMe", false)!= true) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.remove("RememberMe");
                     editor.remove("currentUser");
                     editor.apply();
-                }
+                }*/
                 break;
         }
 

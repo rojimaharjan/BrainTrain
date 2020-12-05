@@ -68,6 +68,7 @@ public class LoginFragment extends Fragment {
         nextButton = view.findViewById(R.id.signIn_button);
         signupButton = view.findViewById(R.id.signUp_button);
         remember = view.findViewById(R.id.rememberme);
+        remember.setChecked(true);
         final SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
         if (sharedPreferences.getString("currentUser", null) != null) {
             String currentUser =""+sharedPreferences.getString("currentUser", "");
@@ -111,12 +112,13 @@ public class LoginFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                remember.setChecked(true);
                 if (!isPasswordValid(passwordEditText.getText().toString())) {
                     passwordTextInput.setError(getString(R.string.error_username));
                 } else {
                     passwordTextInput.setError(null); // Clear the error
 //save in preference
-                    SaveInSharedPreference(rememberMe);
+                    SaveInSharedPreference(true);
                     ((NavigationHost) getActivity()).navigateTo(new HomeFragment(),passwordEditText.getText().toString(),  false); // Navigate to the next Fragment
                 }
             }
@@ -179,7 +181,7 @@ public class LoginFragment extends Fragment {
     private void SaveInSharedPreference(boolean isChecked) {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("RememberMe", isChecked);
+        editor.putBoolean("RememberMe", true);
         editor.putString("currentUser", passwordEditText.getText().toString() );
         editor.apply();
     }

@@ -114,7 +114,7 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
     DatabaseReference myRef = database.getReference("users");
     DatabaseReference medicationRef;
     private UserDao userDao;
-    public String MN, sD, d, dt, f, ft;
+    public String MN, sD, d, dt, f, ft, type;
     public String edit= new String();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -158,8 +158,6 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
             edited = Boolean.parseBoolean(edit);
         }
 
-
-
         if(edited) {
             edited = false;
             isEditing = true;
@@ -167,7 +165,10 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
             int currentPosition = Integer.parseInt(position);
             currentMedication = medicationDao.getMedication(currentPosition);
             MN = currentMedication.getMed_name().toString();
+            type = currentMedication.getType().toString();
+            pills.setText(type);
             boolean asNeeded = currentMedication.isAs_needed();
+            //if as needed is clicked
             if(!asNeeded){
                 Duration currentDuration = durationDao.getDuration(currentPosition);
                 if(currentDuration != null){
@@ -180,7 +181,6 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                     f = currentFrequency.getFrequency_type();
                     ft = currentFrequency.getFrequency_time();
                 }
-
 
                 List<Alarm> currentAlarmList = alarmDao.getcurrentAlarms(currentPosition);
                 if(currentAlarmList.size() >0){
@@ -196,16 +196,12 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                         c.set(c.MINUTE, m);
                         String time = h + ":"+m;
                         DisplayAlarm(c);
-
-
                     }
 
                 }
             }else{
                 asneededCheckbox.setChecked(true);
                 reminderLL.setVisibility(View.INVISIBLE);
-                /*frequency.setText("Daily, X times a day");
-                duration.setText("No end date");*/
             }
 
         }else{
@@ -326,19 +322,20 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                         frequencyRef.setValue(frequencyMap);
 
 
+                        //delete alarm and save new one
+
+                        List<Alarm> alarms = alarmDao.getcurrentAlarms((int) medId);
+                        if(alarms != null){
+                            alarmDao.deleteAlarms((int) medId);
+                        }
+
+                        int alarmcount = alarmList.size();
+                        AddAlarm(medId);
+
 
 
                     }
 
-                    //delete alarm and save new one
-
-                    List<Alarm> alarms = alarmDao.getcurrentAlarms((int) medId);
-                    if(alarms != null){
-                        alarmDao.deleteAlarms((int) medId);
-                    }
-
-                    int alarmcount = alarmList.size();
-                    AddAlarm(medId);
                     clearSharedPreference();
 
                 }
@@ -374,13 +371,13 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
                         frequencyMap.put("frequency_time", freT);
                         frequencyRef.setValue(frequencyMap);
 
-
+                        //                Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
+                        //save alarm and set alarm
+                        AddAlarm(medid);
 
                     }
 
-    //                Toast.makeText(getContext(), "medication saved" + (int) id  , Toast.LENGTH_SHORT).show();
-                    //save alarm and set alarm
-                    AddAlarm(medid);
+
                     clearSharedPreference();
                 }
 
@@ -412,22 +409,14 @@ public class AddMedicationFragment extends Fragment implements UnitDialog.Single
         durationLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DurationFragment durationFragment = new DurationFragment();
-                Bundle args = new Bundle();
-                args.putString("duration", duration.getText().toString());
-                durationFragment.setArguments(args);
-                ((NavigationHost) getActivity()).navigateTo(durationFragment, "Duration", true);
+                ((NavigationHost) getActivity()).navigateTo(new DurationFragment(), "Duration", true);
             }
         });
 
         frequencyLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FrequencyFragment frequencyFragment = new FrequencyFragment();
-                Bundle args = new Bundle();
-                args.putString("edit", "false");
-                frequencyFragment.setArguments(args);
-                ((NavigationHost) getActivity()).navigateTo(frequencyFragment, "Frequency", true);
+                ((NavigationHost) getActivity()).navigateTo(new FrequencyFragment(), "Frequency", true);
             }
         });
 

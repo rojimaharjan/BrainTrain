@@ -1,5 +1,8 @@
 package com.robotz.braintrain;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,9 +27,11 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.robotz.braintrain.Dao.AlarmDao;
 import com.robotz.braintrain.Dao.MedicationDao;
 import com.robotz.braintrain.Dao.UserDao;
 import com.robotz.braintrain.Databse.BrainTrainDatabase;
+import com.robotz.braintrain.Entity.Alarm;
 import com.robotz.braintrain.Entity.Medication;
 import com.robotz.braintrain.Entity.User;
 import com.robotz.braintrain.ViewModel.MedicationViewModel;
@@ -48,11 +53,13 @@ public class MedicationFragment extends Fragment {
     public static final String EXTRA_DIAGNOSIS ="com.robotz.braintrain.EXTRA_DIAGNOSIS";
     public MedicationDao medicationDao;
     private UserDao userDao;
+    private AlarmDao alarmDao;
     private BrainTrainDatabase connDB;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     SharedPreferences sharedPreferences;
     public String currentUser, currentMedication;
     private MedicationCardRecyclerViewAdapter mAdapter;
+    private AlarmManager alarmManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +79,9 @@ public class MedicationFragment extends Fragment {
         if(medications.size() <= 0){
             TextView nomed = view.findViewById(R.id.no_medication);
             nomed.setText("No medication saved");
+        }
+        else{
+            Toast.makeText(getContext(), "Swipe to delete", Toast.LENGTH_SHORT).show();
         }
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_medicationName);
@@ -111,8 +121,9 @@ public class MedicationFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Medication position = ((MedicationCardRecyclerViewAdapter) mAdapter).getMedAt(viewHolder.getAdapterPosition());
 //                Toast.makeText(getContext(), "position"+position, Toast.LENGTH_LONG).show();
-                System.out.println(position.getId());
+//                System.out.println(position.getId());
                 medicationDao.updateDelete(true, position.getId());
+                DeleteAlarm(position.getId());
 //                medicationDao.delete(((MedicationCardRecyclerViewAdapter) adapter).getMedAt(viewHolder.getAdapterPosition()));
 
                 //set isDeleted to true
@@ -157,6 +168,25 @@ public class MedicationFragment extends Fragment {
             }
         });
         return view;
+
+
+    }
+
+    private void DeleteAlarm(int id) {
+        alarmDao = connDB.alarmDao();
+        List<Alarm> alarmList = alarmDao.getcurrentAlarms(id);
+
+        if(alarmList.size() > 0) {
+            for (Alarm a :
+                 alarmList) {
+                alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(getActivity(), AlertReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), a.getAlarmId(), intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(pendingIntent);
+                alarmDao.deleteAlarms(a.getMedicationId());
+            }
+
+        }
 
 
     }

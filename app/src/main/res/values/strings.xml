@@ -63,5 +63,6 @@
     <string name="error_medicationname">Enter medicaiton name.</string>
     <string name="TermsCondition">Terms and Conditions</string>
     <string name="error_name">Should be more than 4 characters!</string>
+    <string name="privacypolicy">Privacy Policy</string>
 
 </resources>

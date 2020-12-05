@@ -81,7 +81,7 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
         Date date = new Date();
 
 
-        sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
+       /* sharedPreferences = getContext().getSharedPreferences("app", MODE_PRIVATE);
         String duration = sharedPreferences.getString("duration", "");
 
 
@@ -104,7 +104,7 @@ public class DurationFragment extends Fragment implements DatePickerDialog.OnDat
                 rb.setChecked(true);
             }
         }
-
+*/
 
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(
