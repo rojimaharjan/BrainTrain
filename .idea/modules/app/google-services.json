@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1058290674635",
+    "firebase_url": "https://braintrain-287617.firebaseio.com",
+    "project_id": "braintrain-287617",
+    "storage_bucket": "braintrain-287617.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058290674635:android:eb4be3633b762e4a3b644e",
+        "android_client_info": {
+          "package_name": "com.robotz.braintrain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058290674635-6lm5vvf52qlbkr9sl17tjttqtbnausdb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.robotz.braintrain",
+            "certificate_hash": "462421048ca0706094a7c4ad2ef01afd8454a8e5"
+          }
+        },
+        {
+          "client_id": "1058290674635-orpblt2p3kkovkqrqu0q9dlpi4d34m50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlPl9i6cvcSYELQ_y7WkiWZuebMYyxF10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1058290674635-orpblt2p3kkovkqrqu0q9dlpi4d34m50.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
